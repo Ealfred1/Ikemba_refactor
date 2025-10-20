@@ -433,3 +433,294 @@ header nav a{
         float: right;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ===== STARBUCKS STYLE SLIDER CSS - SEPARATE ===== */
+@import url('https://fonts.googleapis.com/css2?family=Aboreto&display=swap');
+
+:root {
+    --calculate: 1.5;
+    --w-image: 500px;
+    --border-color: rgba(255, 255, 255, 0.3);
+}
+
+.starbucks-carousel{
+    margin-top: 100px;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+    background-color: #4f8b69;
+}
+.starbucks-carousel .list{
+    height: 100%;
+    position: relative;
+}
+.starbucks-carousel .list::before{
+    position: absolute;
+    width: var(--w-image);
+    height: 100%;
+    content: '';
+    top: 0;
+    left: calc(100% - calc(var(--w-image) * var(--calculate)));
+    border-left: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
+    z-index: 10;
+    pointer-events: none;
+}
+.starbucks-carousel .list::after{
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    content: '';
+    background-color: #8B4513;
+    width: 400px;
+    height: 300px;
+    z-index: 10;
+    pointer-events: none;
+    border-radius: 20px  50px 110px  230px;
+    filter: blur(150px);
+    opacity: .6;
+}
+.starbucks-carousel .list .item{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+.starbucks-carousel .list .item .image{
+    width: var(--w-image);
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: calc(100% - calc(var(--w-image) * var(--calculate)));
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-weight: 500;
+}
+.starbucks-carousel .list .item .image img{
+    width: 90%;
+    max-width: 400px;
+    height: auto;
+    object-fit: contain;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 150px 50px rgba(158, 12, 12, 0.33));
+}
+.starbucks-carousel .list .item .image figcaption{
+    font-family: 'Aboreto';
+    font-weight: bold;
+    font-size: 1.3em;
+    text-align: center;
+    margin-bottom: 30px;
+    width: 90%;
+    color: #333;
+}
+.starbucks-carousel .list .item .main-content{
+    height: 100%;
+    display: grid;
+    grid-template-columns: calc(100% - calc(var(--w-image) * var(--calculate)));
+}
+.starbucks-carousel .list .item .main-content .content{
+    padding: 150px 20px  20px 80px;
+}
+.starbucks-carousel .list .item .main-content .content h2{
+    font-size: 5em;
+    font-family: 'Aboreto';
+    color: white;
+    line-height: 1.1;
+    margin-bottom: 20px;
+}
+.starbucks-carousel .list .item .main-content .content .price{
+    font-family: 'Aboreto';
+    font-size: 3em;
+    margin: 20px 0;
+    color: white;
+}
+.starbucks-carousel .list .item .main-content .content .description{
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin: 20px 0;
+    max-width: 600px;
+}
+.starbucks-carousel .list .item .main-content .content .addToCard{
+    background-color: #4f8b69;
+    color: #fff;
+    padding: 10px  30px;
+    font-family: Poppins;
+    font-size: large;
+    font-weight: 500;
+    border-radius: 30px;
+    border: none;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.starbucks-carousel .list .item .main-content .content .addToCard:hover{
+    background-color: #3a6b52;
+}
+.starbucks-carousel .arrows{
+    position: absolute;
+    bottom: 20px;
+    width: calc(100% - calc(var(--w-image) * var(--calculate)));
+    display: grid;
+    grid-template-columns: repeat(2, 50px);
+    grid-template-rows: 50px;
+    justify-content: end;
+    gap: 10px;
+    z-index: 10;
+}
+.starbucks-carousel .arrows button{
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    color: #fff;
+    font-family: monospace;
+    font-size: large;
+    font-weight: bold;
+    line-height: 0;
+    box-shadow: 0 10px 40px #5555;
+    cursor: pointer;
+    transition: 0.5s;
+}
+.starbucks-carousel .arrows button:hover{
+    background-color: #eee5;
+}
+.starbucks-carousel .list .item{
+    display: none;
+}
+.starbucks-carousel .list .item.active,
+.starbucks-carousel .list .item.other_1,
+.starbucks-carousel .list .item.other_2{
+    display: block;
+}
+.starbucks-carousel .list .item.active{
+    z-index: 2;
+}
+.starbucks-carousel .list .item.other_1,
+.starbucks-carousel .list .item.other_2{
+    pointer-events: none;
+}
+.starbucks-carousel .list .item.active .main-content{
+    animation: showStarbucksContent 1s ease-in-out 1 forwards;
+}
+@keyframes showStarbucksContent{
+    from{
+        clip-path: circle(0% at 70% 50%);
+    }to{
+        clip-path: circle(100% at 70% 50%);
+    }
+}
+.starbucks-carousel.next .item.other_1{
+    z-index: 1;
+}
+.starbucks-carousel.next .item .image img,
+.starbucks-carousel.next .item .image figcaption{
+    animation: effectStarbucksNext .5s ease-in-out 1 forwards;
+}
+@keyframes effectStarbucksNext{
+    from{
+        transform: translateX(calc(var(--transform-from)));
+    }to{
+        transform: translateX(calc(var(--transform-from) - var(--w-image)));
+    }
+}
+.starbucks-carousel.next .item.active .image{
+    --transform-from: var(--w-image);
+}
+.starbucks-carousel.next .item.other_1 .image{
+    z-index: 3;
+    --transform-from: 0px;
+    overflow: hidden;
+}
+.starbucks-carousel.next .item.other_2 .image{
+    z-index: 3;
+    --transform-from: calc(var(--w-image) * 2);
+}
+/* prev */
+.starbucks-carousel.prev .list .item .image img,
+.starbucks-carousel.prev .list .item .image figcaption{
+    animation: effectStarbucksPrev 0.5s ease-in-out 1 forwards;
+}
+@keyframes effectStarbucksPrev{
+    from{
+        transform: translateX(calc(var(--transform-from)));
+    }to{
+        transform: translateX(calc(var(--transform-from) + var(--w-image)));
+    }
+}
+.starbucks-carousel.prev .list .item.active .image{
+    --transform-from: calc(var(--w-image) * -1);
+    overflow: hidden;
+}
+.starbucks-carousel.prev .list .item.other_1 .image{
+    --transform-from: 0px;
+    z-index: 3;
+}
+.starbucks-carousel.prev .list .item.other_2 .image{
+    z-index: 3;
+    --transform-from: var(--w-image);
+}
+.starbucks-carousel.prev .list .item.other_2 .main-content{
+    opacity: 0;
+}
+@media screen and (max-width: 1023px){
+    :root{
+        --calculate: 1;
+        --w-image: 400px; 
+    }
+    .starbucks-carousel .list .item .main-content .content h2{
+        font-size: 3em;
+    }
+}
+@media screen and (max-width: 767px){
+    .starbucks-carousel{
+        height: 100vh;
+        margin-top: 0;
+    }
+    .starbucks-carousel .list .item .image{
+        width: 100%;
+        left: 0;
+        justify-content: center;
+        padding: 10px;
+    }
+    .starbucks-carousel .list .item .image figcaption{
+        color: #333;
+        width: 90%;
+        text-align: center;
+        font-size: 1.1em;
+    }
+    .starbucks-carousel .list .item .main-content .content{
+        display: none;
+    }
+    .starbucks-carousel .arrows{
+        left: 50%;
+        justify-content: center;
+        width: auto;
+    }
+    .starbucks-carousel .list::before,
+    .starbucks-carousel .list::after{
+        display: none;
+    }
+}
