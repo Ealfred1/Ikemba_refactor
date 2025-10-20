@@ -785,6 +785,12 @@ header nav a{
 
 .product-list .product-item .product-content p{
     color: #ddd;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.4;
+    max-height: 2.8em;
 }
 
 .product-list .product-item .product-content p:last-child{

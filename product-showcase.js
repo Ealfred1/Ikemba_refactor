@@ -71,3 +71,74 @@ document.querySelector('.product-slider').addEventListener('mouseleave', () => {
         setProductSlider();
     }, 4000);
 });
+
+// Touch/Swipe functionality
+let touchStartX = 0;
+let touchStartY = 0;
+let touchEndX = 0;
+let touchEndY = 0;
+
+// Touch start
+document.querySelector('.product-slider').addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+});
+
+// Touch end
+document.querySelector('.product-slider').addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    touchEndY = e.changedTouches[0].screenY;
+    handleSwipe();
+});
+
+// Handle swipe gestures
+const handleSwipe = () => {
+    const deltaX = touchEndX - touchStartX;
+    const deltaY = touchEndY - touchStartY;
+    
+    // Check if it's a horizontal swipe (more horizontal than vertical movement)
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        // Minimum swipe distance to trigger
+        if (Math.abs(deltaX) > 50) {
+            if (deltaX > 0) {
+                // Swipe right - go to previous
+                if (productActive > productFirstPosition) {
+                    productActive--;
+                    setProductSlider();
+                }
+            } else {
+                // Swipe left - go to next
+                if (productActive < productLastPosition) {
+                    productActive++;
+                    setProductSlider();
+                }
+            }
+        }
+    }
+};
+
+// Mouse wheel support for desktop - simple version
+let wheelTimeout;
+document.querySelector('.product-slider').addEventListener('wheel', (e) => {
+    e.preventDefault();
+    
+    if (wheelTimeout) {
+        clearTimeout(wheelTimeout);
+    }
+    
+    wheelTimeout = setTimeout(() => {
+        if (e.deltaY > 0) {
+            // Scroll down - next product
+            if (productActive < productLastPosition) {
+                productActive++;
+                setProductSlider();
+            }
+        } else if (e.deltaY < 0) {
+            // Scroll up - previous product
+            if (productActive > productFirstPosition) {
+                productActive--;
+                setProductSlider();
+            }
+        }
+    }, 100);
+}, { passive: false });
