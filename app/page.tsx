@@ -1,65 +1,74 @@
-import Image from "next/image";
+import HeroCarousel from '@/components/sections/HeroCarousel';
+import StarbucksSlider from '@/components/sections/StarbucksSlider';
+import ProductShowcase from '@/components/sections/ProductShowcase';
+import FeaturedCollections from '@/components/sections/FeaturedCollections';
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className="min-h-screen bg-earth-milk overflow-x-hidden">
+      <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-10 py-4 bg-white/80 backdrop-blur-md border-b border-gray-200">
+        <div className="logo font-bold text-2xl tracking-tighter">IKEMBA</div>
+        <nav className="flex gap-8">
+          <a href="#" className="text-gray-800 hover:text-black font-medium">Home</a>
+          <a href="#" className="text-gray-800 hover:text-black font-medium">Products</a>
+          <a href="#" className="text-gray-800 hover:text-black font-medium">About</a>
+          <a href="#" className="text-gray-800 hover:text-black font-medium">Contact</a>
+        </nav>
+      </header>
+
+      <HeroCarousel />
+
+      {/* "Discover" section with matching background style - using a gradient that blends with the hero/slider */}
+      <div className="relative z-10 py-20 bg-gradient-to-b from-transparent to-earth-milk mt-[-50px]">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-4xl font-serif mb-6 text-earth-black">Discover African Luxury</h2>
+          <p className="max-w-2xl mx-auto text-gray-700 font-medium">
+            Ikemba brings you the finest handcrafted goods from across the continent.
+            Each piece tells a story of heritage, craftsmanship, and timeless beauty.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </div>
+
+      <StarbucksSlider />
+
+      <FeaturedCollections />
+
+      <ProductShowcase />
+
+      <footer className="bg-earth-black text-earth-milk py-20 px-10">
+        <div className="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-10">
+          <div>
+            <h3 className="text-2xl font-bold mb-6">IKEMBA</h3>
+            <p className="opacity-70">Celebrating African excellence through design and craftsmanship.</p>
+          </div>
+          <div>
+            <h4 className="font-bold mb-4">Shop</h4>
+            <ul className="space-y-2 opacity-70">
+              <li><a href="#" className="hover:text-white">New Arrivals</a></li>
+              <li><a href="#" className="hover:text-white">Best Sellers</a></li>
+              <li><a href="#" className="hover:text-white">Collections</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-bold mb-4">About</h4>
+            <ul className="space-y-2 opacity-70">
+              <li><a href="#" className="hover:text-white">Our Story</a></li>
+              <li><a href="#" className="hover:text-white">Artisans</a></li>
+              <li><a href="#" className="hover:text-white">Sustainability</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-bold mb-4">Newsletter</h4>
+            <div className="flex gap-2">
+              <input type="email" placeholder="Your email" className="bg-transparent border-b border-white/30 py-2 outline-none focus:border-white w-full" />
+              <button className="text-sm font-bold uppercase tracking-wider">Subscribe</button>
+            </div>
+          </div>
         </div>
-      </main>
-    </div>
+        <div className="container mx-auto mt-20 pt-10 border-t border-white/10 text-center opacity-50 text-sm">
+          &copy; 2024 Ikemba. All rights reserved.
+        </div>
+      </footer>
+    </main>
   );
 }
