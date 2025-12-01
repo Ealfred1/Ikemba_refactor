@@ -92,7 +92,7 @@ export default function ProductShowcase() {
                                 <img
                                     src={product.image}
                                     alt={product.title}
-                                    className="w-[280px] object-contain drop-shadow-2xl transition-all duration-700 group-hover:scale-110 group-hover:-translate-y-10"
+                                    className="w-[350px] object-contain drop-shadow-2xl transition-all duration-700 group-hover:scale-110 group-hover:-translate-y-10"
                                 />
                             </div>
 

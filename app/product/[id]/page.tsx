@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useCart } from '@/components/CartContext';
 
 // Mock data - in a real app this would come from an API or database
 const items = [
@@ -29,10 +30,17 @@ const items = [
 
 export default function ProductPage() {
     const params = useParams();
+    const router = useRouter();
+    const { addItem } = useCart();
     const [showDetail, setShowDetail] = useState(false);
 
     // In a real app, fetch item based on params.id
-    const item = items[0]; // Default to first item for demo
+    // For demo, we'll find the item from our mock list or default to the first one
+    const id = Number(params.id);
+    // Extended mock items to include the new ones we added to ProductShowcase if needed, 
+    // but for now we'll just use the first one as a template or find by ID if we had a full list here.
+    // Let's just use the first item for the animation demo as requested.
+    const item = items[0];
 
     useEffect(() => {
         // Trigger the "showDetail" animation on mount
@@ -42,11 +50,26 @@ export default function ProductPage() {
         return () => clearTimeout(timer);
     }, []);
 
+    const handleAddToCart = () => {
+        addItem({
+            id: item.id,
+            title: item.title,
+            price: '$299', // Using the price from the item
+            image: item.image
+        });
+        // Optional: Show a toast or feedback
+        alert('Added to cart!');
+    };
+
+    const handleCheckout = () => {
+        router.push('/address');
+    };
+
     if (!item) return <div>Product not found</div>;
 
     return (
         <main className="min-h-screen bg-earth-milk overflow-hidden relative">
-            <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-10 py-4 bg-white/80 backdrop-blur-md border-b border-gray-200">
+            <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-10 py-4 bg-white/80 backdrop-blur-md border-b border-gray-200 transition-all duration-500">
                 <Link href="/" className="logo font-bold text-2xl tracking-tighter">IKEMBA</Link>
                 <nav className="flex gap-8">
                     <Link href="/" className="text-gray-800 hover:text-black font-medium">Home</Link>
@@ -57,6 +80,9 @@ export default function ProductPage() {
             {/* Reusing the carousel structure for the animation effect */}
             <div className={`carousel ${showDetail ? 'showDetail' : ''} h-screen mt-0 pt-20`}>
                 <div className="list">
+                    {/* Dummy item to satisfy CSS nth-child(2) selector for active state */}
+                    <div className="item"></div>
+
                     <div className="item" style={{ width: '100%' }}>
                         <div className="detail" style={{ opacity: 1, pointerEvents: 'auto' }}>
                             <div className="title text-4xl font-bold mb-4 text-earth-black">{item.detail.title}</div>
@@ -70,8 +96,18 @@ export default function ProductPage() {
                                 ))}
                             </div>
                             <div className="checkout mt-6 flex gap-4">
-                                <button className="px-6 py-2 border border-earth-black text-earth-black bg-transparent font-medium tracking-wider hover:bg-gray-100 transition-colors">ADD TO CART</button>
-                                <button className="px-6 py-2 bg-earth-red-brown text-white font-medium tracking-wider hover:bg-earth-dark-brown transition-colors">CHECKOUT</button>
+                                <button
+                                    onClick={handleAddToCart}
+                                    className="px-6 py-2 border border-earth-black text-earth-black bg-transparent font-medium tracking-wider hover:bg-gray-100 transition-colors"
+                                >
+                                    ADD TO CART
+                                </button>
+                                <button
+                                    onClick={handleCheckout}
+                                    className="px-6 py-2 bg-earth-red-brown text-white font-medium tracking-wider hover:bg-earth-dark-brown transition-colors"
+                                >
+                                    CHECKOUT
+                                </button>
                             </div>
                         </div>
                         {/* Image positioned to match the "showDetail" state */}
@@ -79,7 +115,7 @@ export default function ProductPage() {
                             <img
                                 src={item.image}
                                 alt={item.title}
-                                className="object-contain w-full h-full p-10"
+                                className="object-contain w-full h-full p-10 drop-shadow-2xl"
                             />
                         </div>
                     </div>
