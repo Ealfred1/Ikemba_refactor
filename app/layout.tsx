@@ -31,8 +31,38 @@ const fontPoppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Lekki Mart – Drinks, Snacks, Water, Groceries",
-  description: "Lekki Mart stocks quality beverages, snacks, toiletries, and household supplies in Lekki Phase I, Lagos.",
+  title: "Lekki Mart | Premium Supermarket in Lekki Phase I",
+  description: "Lekki Mart is the premier supermarket in Lekki Phase I, Lagos, stocking quality beverages, snacks, fresh water, toiletries, and household essentials. Experience agba-tier grocery shopping.",
+  keywords: ["Lekki Mart", "Supermarket Lagos", "Grocery delivery Lekki", "Drinks and Snacks Lekki", "Agba Supermarket", "Lekki Phase 1 shopping"],
+  authors: [{ name: "Lekki Mart Team" }],
+  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
+  icons: {
+    icon: "/o8x5ZQT9LFCkNbmR8zcin.png",
+    shortcut: "/o8x5ZQT9LFCkNbmR8zcin.png",
+    apple: "/o8x5ZQT9LFCkNbmR8zcin.png",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_NG",
+    url: "https://lekkimart.com",
+    title: "Lekki Mart | Premium Supermarket in Lekki Phase I",
+    description: "Quality beverages, snacks, and household essentials delivered to your doorstep in Lekki Phase I.",
+    siteName: "Lekki Mart",
+    images: [
+      {
+        url: "/o8x5ZQT9LFCkNbmR8zcin.png",
+        width: 1200,
+        height: 630,
+        alt: "Lekki Mart Premium Groceries",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Lekki Mart | Premium Supermarket in Lekki Phase I",
+    description: "The premier destination for quality groceries in Lekki Phase I, Lagos.",
+    images: ["/o8x5ZQT9LFCkNbmR8zcin.png"],
+  },
 };
 
 export default function RootLayout({
