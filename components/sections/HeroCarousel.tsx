@@ -8,7 +8,7 @@ const items = [
         id: 1,
         image: '/ikemba_images/camel_skin_leather_bag/camel_skin_leather_bag_1_no_bg.png',
         title: 'Camel Skin Leather Bag',
-        topic: 'IKEMBA COLLECTION',
+        topic: 'LEKKI MART COLLECTION',
         description: 'Handcrafted luxury camel skin leather bag featuring traditional African craftsmanship. Each piece is uniquely designed with authentic materials and exceptional attention to detail.',
         detail: {
             title: 'Camel Skin Leather Bag',
@@ -26,7 +26,7 @@ const items = [
         id: 2,
         image: '/ikemba_images/crocodile_skin_leather_bag/crocodile_skin_leather_bag_1_no_bg.png',
         title: 'Crocodile Skin Leather Bag',
-        topic: 'IKEMBA COLLECTION',
+        topic: 'LEKKI MART COLLECTION',
         description: 'Exquisite crocodile skin leather bag showcasing the finest in African luxury. Premium materials meet traditional craftsmanship in this stunning statement piece.',
         detail: {
             title: 'Crocodile Skin Leather Bag',
@@ -44,7 +44,7 @@ const items = [
         id: 3,
         image: '/ikemba_images/dune_cushion/dune_cushion_1_no_bg.png',
         title: 'Dune Cushion',
-        topic: 'IKEMBA COLLECTION',
+        topic: 'LEKKI MART COLLECTION',
         description: 'Beautifully designed dune-inspired cushions that bring the essence of African landscapes into your home. Handcrafted with premium materials and traditional patterns.',
         detail: {
             title: 'Dune Cushion Collection',
@@ -62,7 +62,7 @@ const items = [
         id: 4,
         image: '/ikemba_images/ahi__tote_bag/ahi__tote_bag_1_no_bg.png',
         title: 'Ahi Tote Bag',
-        topic: 'IKEMBA COLLECTION',
+        topic: 'LEKKI MART COLLECTION',
         description: 'Stylish and functional Ahi tote bag featuring contemporary African design elements. Perfect for everyday use while showcasing authentic cultural heritage.',
         detail: {
             title: 'Ahi Tote Bag',
@@ -80,7 +80,7 @@ const items = [
         id: 5,
         image: '/ikemba_images/curlt_life_body_butter/curlt_life_body_butter_1_no_bg.png',
         title: 'Curl Life Body Butter',
-        topic: 'IKEMBA COLLECTION',
+        topic: 'LEKKI MART COLLECTION',
         description: 'Nourishing body butter specially formulated for natural hair care. Enriched with African botanical extracts and traditional ingredients for healthy, beautiful curls.',
         detail: {
             title: 'Curl Life Body Butter',
@@ -160,7 +160,7 @@ export default function HeroCarousel() {
                             <div className="title text-2xl font-medium leading-none text-earth-black">{item.topic}</div>
                             <div className="topic text-6xl font-medium text-earth-black">{item.title}</div>
                             <div className="des text-sm text-gray-600 mt-4 font-medium">{item.description}</div>
-                            <button className="seeMore mt-4 px-4 py-2 border-b border-earth-black text-earth-black bg-transparent font-bold tracking-widest hover:bg-gray-100 transition-colors" onClick={handleSeeMore}>
+                            <button className="seeMore mt-4 px-4 py-2 border-b border-earth-black text-earth-black bg-transparent font-bold hover:bg-gray-100 transition-colors" onClick={handleSeeMore}>
                                 SEE MORE &#8599;
                             </button>
                         </div>
@@ -176,8 +176,8 @@ export default function HeroCarousel() {
                                 ))}
                             </div>
                             <div className="checkout mt-6 flex gap-4">
-                                <button className="px-6 py-2 border border-earth-black text-earth-black bg-transparent font-medium tracking-wider hover:bg-gray-100 transition-colors">ADD TO CART</button>
-                                <button className="px-6 py-2 bg-earth-red-brown text-white font-medium tracking-wider hover:bg-earth-dark-brown transition-colors">CHECKOUT</button>
+                                <button className="px-6 py-2 border border-earth-black text-earth-black bg-transparent font-medium hover:bg-gray-100 transition-colors">ADD TO CART</button>
+                                <button className="px-6 py-2 bg-earth-red-brown text-white font-medium hover:bg-earth-dark-brown transition-colors">CHECKOUT</button>
                             </div>
                         </div>
                     </div>
@@ -186,7 +186,7 @@ export default function HeroCarousel() {
             <div className="arrows absolute bottom-4 left-1/2 -translate-x-1/2 w-[90%] max-w-[1140px] flex justify-between z-50">
                 <button id="prev" onClick={handlePrev} className="w-10 h-10 rounded-full border border-earth-black text-earth-black bg-transparent font-mono text-lg hover:bg-gray-200 transition-colors">&lt;</button>
                 <button id="next" onClick={handleNext} className="w-10 h-10 rounded-full border border-earth-black text-earth-black bg-transparent font-mono text-lg hover:bg-gray-200 transition-colors">&gt;</button>
-                <button id="back" onClick={handleBack} className={`absolute bottom-0 left-1/2 -translate-x-1/2 border-b border-earth-black text-earth-black bg-transparent font-bold tracking-widest p-2 transition-opacity duration-500 ${showDetail ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
+                <button id="back" onClick={handleBack} className={`absolute bottom-0 left-1/2 -translate-x-1/2 border-b border-earth-black text-earth-black bg-transparent font-bold p-2 transition-opacity duration-500 ${showDetail ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
                     See All &#8599;
                 </button>
             </div>

@@ -1,144 +1,178 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/components/CartContext';
 
 export default function CheckoutPage() {
-    const { items } = useCart();
+    const { items, clearCart } = useCart();
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
 
-    // Mock total calculation
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
     const total = items.reduce((acc, item) => {
-        const price = parseFloat(item.price.replace('$', ''));
-        return acc + price * item.quantity;
+        const priceStr = item.price.replace(/[$,₦,]/g, '');
+        const price = parseFloat(priceStr);
+        return acc + (isNaN(price) ? 0 : price * item.quantity);
     }, 0);
 
+    const handlePayment = () => {
+        setIsProcessing(true);
+        setTimeout(() => {
+            setIsProcessing(false);
+            setIsSuccess(true);
+            clearCart();
+        }, 2500);
+    };
+
+    if (!isMounted) return null;
+
+    if (isSuccess) {
+        return (
+            <main className="min-h-screen bg-lekki-black flex items-center justify-center p-4">
+                <div className="bg-lekki-gray p-12 rounded-[3rem] shadow-2xl text-center max-w-md animate-show-content border border-white/5">
+                    <div className="w-24 h-24 bg-lekki-lime text-lekki-black rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-lekki-lime/20">
+                        <svg xmlns="http://www.w3.org/2000/center" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                    <h2 className="text-4xl font-serif text-white mb-4">Confirmed!</h2>
+                    <p className="text-white/40 mb-10 font-medium">Your daily needs are being packed. Lekki Mart quality coming your way.</p>
+                    <Link href="/" className="inline-block bg-lekki-lime text-lekki-black px-12 py-5 rounded-md font-black hover:bg-white transition-all shadow-xl">
+                        RETURN HOME
+                    </Link>
+                </div>
+            </main>
+        );
+    }
+
     return (
-        <main className="min-h-screen bg-earth-milk relative overflow-hidden flex items-center justify-center py-20">
-            {/* Background Elements */}
-            <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
-                <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-earth-red-brown opacity-20 blur-[100px] animate-float"></div>
-                <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] rounded-full bg-earth-dark-brown opacity-20 blur-[120px] animate-float" style={{ animationDelay: '2s' }}></div>
+        <main className="min-h-screen bg-lekki-black relative flex items-center justify-center py-10 md:py-20 px-4 font-sans">
+            {/* Background Detail */}
+            <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden blur-[120px] opacity-10">
+                <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-lekki-lime animate-float"></div>
+                <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] rounded-full bg-lekki-lime animate-float" style={{ animationDelay: '2s' }}></div>
             </div>
 
-            <div className="container mx-auto px-4 relative z-10 max-w-6xl">
-                <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row animate-show-content">
-
-                    {/* Left Side - Payment */}
-                    <div className="w-full md:w-2/3 p-10 order-2 md:order-1">
-                        <div className="mb-8">
-                            <Link href="/" className="text-2xl font-bold tracking-tighter mb-6 block md:hidden">IKEMBA</Link>
-                            <h2 className="text-3xl font-antonio leading-tight mb-2">PAYMENT METHOD</h2>
-                            <p className="text-gray-500 text-sm">Select your preferred payment method.</p>
+            <div className="container mx-auto relative z-10 max-w-6xl">
+                <div className="bg-lekki-gray rounded-[3rem] shadow-[0_48px_80px_-16px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col md:flex-row min-h-[700px] border border-white/5">
+                    
+                    {/* Payment Side */}
+                    <div className="w-full md:w-[60%] p-8 md:p-16 order-2 md:order-1">
+                        <div className="mb-14">
+                            <div className="flex items-center gap-3 mb-10">
+                                <div className="w-10 h-10 bg-lekki-lime rounded-xl flex items-center justify-center text-lekki-black font-black text-xl">L</div>
+                                <span className="font-antonio text-2xl font-bold tracking-tighter text-lekki-lime uppercase">LEKKI MART</span>
+                            </div>
+                            <h2 className="text-5xl font-serif text-white mb-4">Secure Checkout</h2>
+                            <p className="text-lekki-lime text-[10px] font-black opacity-40">Tier: Agba Supermarket</p>
                         </div>
 
-                        <div className="space-y-6">
-                            {/* Payment Options */}
+                        <div className="space-y-12">
                             <div className="grid grid-cols-2 gap-4">
-                                <button className="border border-earth-black/20 rounded-xl p-4 flex flex-col items-center justify-center gap-2 hover:bg-earth-black hover:text-white transition-all group">
-                                    <span className="font-bold">Credit Card</span>
+                                <button className="bg-lekki-lime text-lekki-black rounded-md p-6 flex flex-col items-center justify-center gap-2 shadow-2xl shadow-lekki-lime/10">
+                                    <span className="font-black text-[10px]">Credit Card</span>
                                 </button>
-                                <button className="border border-earth-black/20 rounded-xl p-4 flex flex-col items-center justify-center gap-2 hover:bg-earth-black hover:text-white transition-all group">
-                                    <span className="font-bold">PayPal</span>
+                                <button className="border-2 border-white/5 rounded-md p-6 flex flex-col items-center justify-center gap-2 hover:border-white/20 transition-all text-white/30">
+                                    <span className="font-black text-[10px]">Bank Transfer</span>
                                 </button>
                             </div>
 
-                            {/* Credit Card Form */}
-                            <div className="space-y-4 mt-6">
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold text-earth-black uppercase tracking-wider">Card Number</label>
+                            <div className="grid gap-10">
+                                <div className="space-y-3 group">
+                                    <label className="text-[10px] font-black text-lekki-lime opacity-40 group-focus-within:opacity-100 transition-opacity">Card Number</label>
                                     <input
                                         type="text"
-                                        className="w-full bg-transparent border-b border-gray-300 py-2 focus:outline-none focus:border-earth-red-brown transition-colors"
+                                        className="w-full bg-transparent border-b-2 border-white/5 py-4 focus:outline-none focus:border-lekki-lime transition-colors text-xl text-white font-medium tracking-[0.1em]"
                                         placeholder="0000 0000 0000 0000"
                                     />
                                 </div>
-                                <div className="grid grid-cols-2 gap-6">
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-bold text-earth-black uppercase tracking-wider">Expiry Date</label>
+                                <div className="grid grid-cols-2 gap-12">
+                                    <div className="space-y-3 group">
+                                        <label className="text-[10px] font-black text-lekki-lime opacity-40 group-focus-within:opacity-100 transition-opacity">Expiry</label>
                                         <input
                                             type="text"
-                                            className="w-full bg-transparent border-b border-gray-300 py-2 focus:outline-none focus:border-earth-red-brown transition-colors"
+                                            className="w-full bg-transparent border-b-2 border-white/5 py-4 focus:outline-none focus:border-lekki-lime transition-colors text-white"
                                             placeholder="MM/YY"
                                         />
                                     </div>
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-bold text-earth-black uppercase tracking-wider">CVC</label>
+                                    <div className="space-y-3 group">
+                                        <label className="text-[10px] font-black text-lekki-lime opacity-40 group-focus-within:opacity-100 transition-opacity">CVC</label>
                                         <input
                                             type="text"
-                                            className="w-full bg-transparent border-b border-gray-300 py-2 focus:outline-none focus:border-earth-red-brown transition-colors"
+                                            className="w-full bg-transparent border-b-2 border-white/5 py-4 focus:outline-none focus:border-lekki-lime transition-colors text-white"
                                             placeholder="123"
                                         />
                                     </div>
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold text-earth-black uppercase tracking-wider">Cardholder Name</label>
-                                    <input
-                                        type="text"
-                                        className="w-full bg-transparent border-b border-gray-300 py-2 focus:outline-none focus:border-earth-red-brown transition-colors"
-                                        placeholder="John Doe"
-                                    />
-                                </div>
                             </div>
 
-                            <div className="pt-6">
-                                <button className="w-full py-4 bg-earth-black text-white font-bold tracking-widest hover:bg-earth-red-brown transition-colors rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-                                    PAY ${total > 0 ? total : '299.00'}
-                                </button>
-                            </div>
+                            <button 
+                                onClick={handlePayment}
+                                disabled={isProcessing || items.length === 0}
+                                className="w-full py-7 bg-lekki-lime text-lekki-black font-black rounded-md shadow-2xl hover:bg-white active:scale-[0.98] transition-all disabled:opacity-20 flex items-center justify-center gap-5 mt-10"
+                            >
+                                {isProcessing ? (
+                                    <>
+                                        <div className="w-6 h-6 border-4 border-lekki-black/20 border-t-lekki-black rounded-full animate-spin"></div>
+                                        Processing Order...
+                                    </>
+                                ) : (
+                                    <>
+                                        <span>Confirm Bill</span>
+                                        <span className="w-2 h-2 rounded-full bg-lekki-black/30"></span>
+                                        <span>₦{total.toLocaleString()}</span>
+                                    </>
+                                )}
+                            </button>
                         </div>
                     </div>
 
-                    {/* Right Side - Order Summary */}
-                    <div className="w-full md:w-1/3 bg-earth-black text-white p-10 flex flex-col relative overflow-hidden order-1 md:order-2">
-                        <div className="relative z-10">
-                            <Link href="/" className="text-2xl font-bold tracking-tighter mb-10 hidden md:block">IKEMBA</Link>
-                            <h2 className="text-2xl font-antonio leading-tight mb-6">ORDER SUMMARY</h2>
+                    {/* Summary Side */}
+                    <div className="w-full md:w-[40%] bg-lekki-black text-white p-8 md:p-16 flex flex-col relative overflow-hidden order-1 md:order-2 border-l border-white/5">
+                        <div className="relative z-10 flex flex-col h-full">
+                            <h3 className="text-sm font-black mb-12 text-lekki-lime opacity-80">Order Abstract</h3>
 
-                            <div className="space-y-4 mb-8 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                            <div className="flex-grow space-y-10 overflow-y-auto pr-4 mb-14 max-h-[450px] custom-scrollbar">
                                 {items.length > 0 ? items.map((item) => (
-                                    <div key={item.id} className="flex gap-4 items-center">
-                                        <div className="w-16 h-16 bg-white/10 rounded-lg p-2 flex items-center justify-center">
-                                            <img src={item.image} alt={item.title} className="max-w-full max-h-full object-contain" />
+                                    <div key={item.id} className="flex gap-6 items-start group">
+                                        <div className="w-24 h-24 bg-lekki-gray rounded-md flex-shrink-0 flex items-center justify-center border border-white/5 group-hover:border-lekki-lime/20 transition-colors overflow-hidden p-4">
+                                            <img src={item.image} alt={item.title} className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-500 opacity-60 group-hover:opacity-100" />
                                         </div>
-                                        <div>
-                                            <p className="font-bold text-sm">{item.title}</p>
-                                            <p className="text-white/60 text-xs">Qty: {item.quantity}</p>
-                                            <p className="text-earth-light-brown text-sm">{item.price}</p>
+                                        <div className="flex-grow pt-2">
+                                            <p className="text-sm font-black leading-tight group-hover:text-lekki-lime transition-colors line-clamp-2 tracking-tight">{item.title}</p>
+                                            <div className="flex justify-between items-center mt-4">
+                                                <span className="text-white/20 text-[10px] font-black">Qty {item.quantity}</span>
+                                                <span className="text-lekki-lime text-base font-black tracking-tighter">{item.price}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 )) : (
-                                    <div className="flex gap-4 items-center opacity-50">
-                                        <div className="w-16 h-16 bg-white/10 rounded-lg p-2 flex items-center justify-center">
-                                            <div className="w-8 h-8 bg-white/20 rounded-full"></div>
-                                        </div>
-                                        <div>
-                                            <p className="font-bold text-sm">Camel Skin Bag</p>
-                                            <p className="text-white/60 text-xs">Qty: 1</p>
-                                            <p className="text-earth-light-brown text-sm">$299</p>
-                                        </div>
+                                    <div className="py-24 text-center opacity-10">
+                                        <p className="text-xs font-black">Inventory Empty</p>
                                     </div>
                                 )}
                             </div>
 
-                            <div className="border-t border-white/10 pt-4 space-y-2">
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-white/60">Subtotal</span>
-                                    <span>${total > 0 ? total : '299.00'}</span>
+                            <div className="mt-auto border-t border-white/5 pt-10 space-y-6">
+                                <div className="flex justify-between items-center text-[10px] font-black text-white/30">
+                                    <span>Subtotal</span>
+                                    <span>₦{total.toLocaleString()}</span>
                                 </div>
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-white/60">Shipping</span>
-                                    <span>Free</span>
+                                <div className="flex justify-between items-center text-[10px] font-black text-white/30">
+                                    <span>Logistics</span>
+                                    <span className="text-lekki-lime opacity-100">Agba Free</span>
                                 </div>
-                                <div className="flex justify-between text-lg font-bold pt-2">
-                                    <span>Total</span>
-                                    <span className="text-earth-light-brown">${total > 0 ? total : '299.00'}</span>
+                                <div className="flex justify-between items-end pt-10 border-t border-white/5">
+                                    <span className="text-xs font-black text-white/40 mb-2">Grand Total</span>
+                                    <span className="text-5xl font-antonio font-bold text-lekki-lime">₦{total.toLocaleString()}</span>
                                 </div>
                             </div>
                         </div>
-
-                        {/* Decorative Circle */}
-                        <div className="absolute top-[-50px] left-[-50px] w-[200px] h-[200px] rounded-full border border-white/10"></div>
                     </div>
                 </div>
             </div>

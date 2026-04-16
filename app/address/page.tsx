@@ -1,173 +1,88 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React from 'react';
 import Link from 'next/link';
 
 export default function AddressPage() {
-    const router = useRouter();
-    const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        address: '',
-        city: '',
-        state: '',
-        zip: '',
-        country: '',
-        email: ''
-    });
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        // In a real app, save address to context or DB
-        router.push('/checkout');
-    };
-
     return (
-        <main className="min-h-screen bg-earth-milk relative overflow-hidden flex items-center justify-center py-20">
-            {/* Background Elements */}
-            <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
-                <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-earth-red-brown opacity-20 blur-[100px] animate-float"></div>
-                <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] rounded-full bg-earth-dark-brown opacity-20 blur-[120px] animate-float" style={{ animationDelay: '2s' }}></div>
+        <main className="min-h-screen bg-lekki-black relative flex items-center justify-center py-20 px-4 font-sans">
+            {/* Background Detail */}
+            <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden blur-[120px] opacity-10">
+                <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-lekki-lime animate-float"></div>
+                <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] rounded-full bg-lekki-lime animate-float" style={{ animationDelay: '2s' }}></div>
             </div>
 
-            <div className="container mx-auto px-4 relative z-10 max-w-4xl">
-                <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row animate-show-content">
-
-                    {/* Left Side - Visual */}
-                    <div className="w-full md:w-1/3 bg-earth-black text-white p-10 flex flex-col justify-between relative overflow-hidden">
+            <div className="container mx-auto relative z-10 max-w-6xl">
+                <div className="bg-lekki-gray rounded-md shadow-[0_48px_80px_-16px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col md:flex-row min-h-[600px] border border-white/5">
+                    
+                    {/* Visual Segment */}
+                    <div className="w-full md:w-1/3 bg-lekki-black text-white p-12 flex flex-col justify-between relative overflow-hidden border-r border-white/5">
                         <div className="relative z-10">
-                            <Link href="/" className="text-2xl font-bold tracking-tighter mb-10 block">IKEMBA</Link>
-                            <h2 className="text-4xl font-antonio leading-tight mb-4">SHIPPING<br />DETAILS</h2>
-                            <p className="text-white/60 text-sm">Please enter your delivery information to proceed with the order.</p>
-                        </div>
-                        <div className="relative z-10 mt-10">
-                            <div className="flex items-center gap-4 text-sm text-white/40">
-                                <span className="text-white font-bold">01 Address</span>
-                                <div className="h-[1px] w-10 bg-white/20"></div>
-                                <span>02 Checkout</span>
+                            <div className="flex items-center gap-3 mb-12">
+                                <div className="w-8 h-8 bg-lekki-lime rounded-lg flex items-center justify-center text-lekki-black font-black text-lg">L</div>
+                                <span className="font-antonio text-xl font-bold tracking-tighter text-lekki-lime uppercase">LEKKI MART</span>
                             </div>
+                            <h2 className="text-5xl font-serif leading-tight mb-6">Logistics<br />Detail</h2>
+                            <p className="text-white/30 text-[10px] font-black leading-loose">Enter your coordinates for agba delivery tier.</p>
                         </div>
-
-                        {/* Decorative Circle */}
-                        <div className="absolute bottom-[-50px] right-[-50px] w-[200px] h-[200px] rounded-full border border-white/10"></div>
-                        <div className="absolute bottom-[-30px] right-[-30px] w-[160px] h-[160px] rounded-full border border-white/10"></div>
+                        
+                        <div className="relative z-10 p-6 bg-lekki-lime/5 rounded-md border border-lekki-lime/10">
+                            <p className="text-[10px] font-black text-lekki-lime mb-2">Delivery Radius</p>
+                            <p className="text-xs font-bold text-white opacity-60">Lekki Phase I & Surrounding Areas</p>
+                        </div>
+                        
+                        {/* Background Detail */}
+                        <div className="absolute top-[-50px] left-[-50px] w-64 h-64 border border-white/5 rounded-full pointer-events-none"></div>
                     </div>
 
-                    {/* Right Side - Form */}
-                    <div className="w-full md:w-2/3 p-10">
-                        <form onSubmit={handleSubmit} className="space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold text-earth-black uppercase tracking-wider">First Name</label>
-                                    <input
-                                        type="text"
-                                        name="firstName"
-                                        required
-                                        className="w-full bg-transparent border-b border-gray-300 py-2 focus:outline-none focus:border-earth-red-brown transition-colors"
-                                        placeholder="John"
-                                        onChange={handleChange}
-                                    />
+                    {/* Form Segment */}
+                    <div className="w-full md:w-2/3 p-12 md:p-20 bg-lekki-gray">
+                        <div className="mb-14">
+                            <h3 className="text-2xl font-serif text-white mb-2">Delivery Information</h3>
+                            <div className="h-1 w-20 bg-lekki-lime rounded-full"></div>
+                        </div>
+
+                        <form className="space-y-10">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                <div className="space-y-3 group">
+                                    <label className="text-[10px] font-black text-lekki-lime opacity-40 group-focus-within:opacity-100 transition-opacity">First Name</label>
+                                    <input type="text" className="w-full bg-transparent border-b-2 border-white/5 py-4 focus:outline-none focus:border-lekki-lime transition-colors text-white font-medium" placeholder="Agba" />
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold text-earth-black uppercase tracking-wider">Last Name</label>
-                                    <input
-                                        type="text"
-                                        name="lastName"
-                                        required
-                                        className="w-full bg-transparent border-b border-gray-300 py-2 focus:outline-none focus:border-earth-red-brown transition-colors"
-                                        placeholder="Doe"
-                                        onChange={handleChange}
-                                    />
+                                <div className="space-y-3 group">
+                                    <label className="text-[10px] font-black text-lekki-lime opacity-40 group-focus-within:opacity-100 transition-opacity">Last Name</label>
+                                    <input type="text" className="w-full bg-transparent border-b-2 border-white/5 py-4 focus:outline-none focus:border-lekki-lime transition-colors text-white font-medium" placeholder="User" />
                                 </div>
                             </div>
 
-                            <div className="space-y-2">
-                                <label className="text-xs font-bold text-earth-black uppercase tracking-wider">Email Address</label>
-                                <input
-                                    type="email"
-                                    name="email"
-                                    required
-                                    className="w-full bg-transparent border-b border-gray-300 py-2 focus:outline-none focus:border-earth-red-brown transition-colors"
-                                    placeholder="john@example.com"
-                                    onChange={handleChange}
-                                />
+                            <div className="space-y-3 group">
+                                <label className="text-[10px] font-black text-lekki-lime opacity-40 group-focus-within:opacity-100 transition-opacity">Street Address</label>
+                                <input type="text" className="w-full bg-transparent border-b-2 border-white/5 py-4 focus:outline-none focus:border-lekki-lime transition-colors text-white font-medium" placeholder="11b Shafi Sule St" />
                             </div>
 
-                            <div className="space-y-2">
-                                <label className="text-xs font-bold text-earth-black uppercase tracking-wider">Address</label>
-                                <input
-                                    type="text"
-                                    name="address"
-                                    required
-                                    className="w-full bg-transparent border-b border-gray-300 py-2 focus:outline-none focus:border-earth-red-brown transition-colors"
-                                    placeholder="123 Fashion St"
-                                    onChange={handleChange}
-                                />
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold text-earth-black uppercase tracking-wider">City</label>
-                                    <input
-                                        type="text"
-                                        name="city"
-                                        required
-                                        className="w-full bg-transparent border-b border-gray-300 py-2 focus:outline-none focus:border-earth-red-brown transition-colors"
-                                        placeholder="New York"
-                                        onChange={handleChange}
-                                    />
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+                                <div className="space-y-3 group md:col-span-2">
+                                    <label className="text-[10px] font-black text-lekki-lime opacity-40 group-focus-within:opacity-100 transition-opacity">City / Area</label>
+                                    <input type="text" className="w-full bg-transparent border-b-2 border-white/5 py-4 focus:outline-none focus:border-lekki-lime transition-colors text-white font-medium" placeholder="Lekki Phase I" />
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold text-earth-black uppercase tracking-wider">State</label>
-                                    <input
-                                        type="text"
-                                        name="state"
-                                        required
-                                        className="w-full bg-transparent border-b border-gray-300 py-2 focus:outline-none focus:border-earth-red-brown transition-colors"
-                                        placeholder="NY"
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold text-earth-black uppercase tracking-wider">Zip Code</label>
-                                    <input
-                                        type="text"
-                                        name="zip"
-                                        required
-                                        className="w-full bg-transparent border-b border-gray-300 py-2 focus:outline-none focus:border-earth-red-brown transition-colors"
-                                        placeholder="10001"
-                                        onChange={handleChange}
-                                    />
+                                <div className="space-y-3 group">
+                                    <label className="text-[10px] font-black text-lekki-lime opacity-40 group-focus-within:opacity-100 transition-opacity">Postal Code</label>
+                                    <input type="text" className="w-full bg-transparent border-b-2 border-white/5 py-4 focus:outline-none focus:border-lekki-lime transition-colors text-white font-medium" placeholder="106104" />
                                 </div>
                             </div>
 
-                            <div className="space-y-2">
-                                <label className="text-xs font-bold text-earth-black uppercase tracking-wider">Country</label>
-                                <select
-                                    name="country"
-                                    className="w-full bg-transparent border-b border-gray-300 py-2 focus:outline-none focus:border-earth-red-brown transition-colors"
-                                    onChange={handleChange}
+                            <div className="pt-10 flex flex-col md:flex-row gap-6">
+                                <Link 
+                                    href="/checkout"
+                                    className="flex-grow py-6 bg-lekki-lime text-lekki-black font-black rounded-md shadow-2xl hover:bg-white transition-all text-center active:scale-[0.98]"
                                 >
-                                    <option value="">Select Country</option>
-                                    <option value="US">United States</option>
-                                    <option value="UK">United Kingdom</option>
-                                    <option value="CA">Canada</option>
-                                    <option value="NG">Nigeria</option>
-                                </select>
-                            </div>
-
-                            <div className="pt-6 flex justify-end">
-                                <button
-                                    type="submit"
-                                    className="px-8 py-3 bg-earth-black text-white font-bold tracking-widest hover:bg-earth-red-brown transition-colors rounded-full"
+                                    Proceed to payment
+                                </Link>
+                                <Link 
+                                    href="/"
+                                    className="px-10 py-6 border-2 border-white/5 text-white/40 font-black rounded-md hover:border-white/20 transition-all text-center active:scale-[0.98]"
                                 >
-                                    CONTINUE TO CHECKOUT
-                                </button>
+                                    Cancel
+                                </Link>
                             </div>
                         </form>
                     </div>

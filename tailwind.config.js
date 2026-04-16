@@ -8,43 +8,34 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                // GSAP Awwwards Palette (Earth Tones)
-                'earth-black': '#222123',
-                'earth-main-bg': '#232224',
-                'earth-white': '#ffffff',
-                'earth-dark-brown': '#523122',
-                'earth-mid-brown': '#a26833',
-                'earth-light-brown': '#e3a458',
-                'earth-red-brown': '#7f3b2d',
-                'earth-yellow-brown': '#a26833',
-                'earth-milk-yellow': '#e3d3bc',
-                'earth-red': '#a02128',
-                'earth-milk': '#faeade',
+                // Lekki Mart Cyber Palette
+                'lekki-lime': '#A4E600',
+                'lekki-black': '#000000',
+                'lekki-dark': '#121212',
+                'lekki-gray': '#1A1A1A',
+                'lekki-light': '#F5F7F5',
 
-                // Starbucks Palette (Greens)
-                'starbucks-green': '#4f8b69',
-                'starbucks-dark-green': '#3a6b52',
-                'starbucks-bg': '#4f8b69',
+                // Aliases for compatibility
+                'lekkimart-dark': '#000000',
+                'lekkimart-primary': '#A4E600',
+                'lekkimart-secondary': '#A4E600',
+                'lekkimart-accent': '#A4E600',
+                'lekkimart-offwhite': '#F5F7F5',
 
-                // Ikemba Legacy (Dark/Blue)
-                'ikemba-primary': '#00040f',
-                'ikemba-secondary': '#00f6ff',
-                'ikemba-dimWhite': 'rgba(255, 255, 255, 0.7)',
-                'ikemba-dimBlue': 'rgba(9, 151, 124, 0.1)',
-                'ikemba-gold': '#EDC452',
+                'earth-black': '#000000',
+                'earth-milk': '#F5F7F5',
+                'earth-dark-brown': '#000000',
+                'earth-mid-brown': '#A4E600',
+                'earth-light-brown': '#A4E600',
             },
             fontFamily: {
                 'sans': ['Poppins', 'sans-serif'],
                 'serif': ['Playfair Display', 'serif'],
-                'aboreto': ['Aboreto', 'cursive'],
-                'bebas': ['Bebas Neue', 'sans-serif'],
                 'antonio': ['Antonio', 'sans-serif'],
             },
             animation: {
-                'spin-slow': 'spin 3s linear infinite',
-                'bounce-slow': 'bounce 3s infinite',
                 'float': 'float 6s ease-in-out infinite',
-                'show-content': 'showContent 0.5s 1s ease-in-out 1 forwards',
+                'show-content': 'showContent 0.5s ease-in-out forwards',
             },
             keyframes: {
                 float: {

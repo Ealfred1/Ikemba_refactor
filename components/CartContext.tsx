@@ -15,6 +15,9 @@ interface CartContextProps {
     addItem: (item: Omit<CartItem, 'quantity'>) => void;
     removeItem: (id: number) => void;
     clearCart: () => void;
+    isDrawerOpen: boolean;
+    openDrawer: () => void;
+    closeDrawer: () => void;
 }
 
 const CartContext = createContext<CartContextProps | undefined>(undefined);
@@ -33,6 +36,10 @@ interface CartProviderProps {
 
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     const [items, setItems] = useState<CartItem[]>([]);
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+    const openDrawer = () => setIsDrawerOpen(true);
+    const closeDrawer = () => setIsDrawerOpen(false);
 
     const addItem = (item: Omit<CartItem, 'quantity'>) => {
         setItems(prev => {
@@ -44,6 +51,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
             }
             return [...prev, { ...item, quantity: 1 }];
         });
+        openDrawer();
     };
 
     const removeItem = (id: number) => {
@@ -53,7 +61,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     const clearCart = () => setItems([]);
 
     return (
-        <CartContext.Provider value={{ items, addItem, removeItem, clearCart }}>
+        <CartContext.Provider value={{ items, addItem, removeItem, clearCart, isDrawerOpen, openDrawer, closeDrawer }}>
             {children}
         </CartContext.Provider>
     );
