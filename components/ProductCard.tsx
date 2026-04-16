@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useCart } from './CartContext';
-import { Product } from '@/lib/products';
+import { Product } from '@/lib/chowdeck';
 
 interface ProductCardProps {
     product: Product;
@@ -12,63 +12,83 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     const { addItem } = useCart();
 
-    // Use a deterministic ID based on the product slug/name if possible
-    const productHash = product.name.split('').reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0);
-    const id = productHash;
-
     const handleAddToCart = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        
+
         addItem({
-            id: id,
+            id: product.id,
             title: product.name,
             price: `₦${product.discountedPrice.toLocaleString()}`,
             image: product.image
         });
     };
 
-    return (
-        <div className="group bg-lekki-gray rounded-md overflow-hidden border border-white/5 hover:border-lekki-lime/30 transition-all duration-500 shadow-2xl flex flex-col relative">
-            <Link href={`/product/${id}`} className="flex flex-col grow">
-                <div className="relative aspect-square overflow-hidden bg-lekki-black">
-                    <img 
-                        src={product.image} 
-                        alt={product.name} 
-                        className="w-full h-full object-contain p-6 group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100"
-                    />
-                    <div className="absolute top-4 left-4 bg-lekki-lime text-lekki-black text-[9px] font-black px-3 py-1 rounded-full">
-                        In Stock
-                    </div>
-                </div>
-                
-                <div className="p-8 flex flex-col grow">
-                    <div className="grow">
-                        <p className="text-[10px] text-lekki-lime font-bold mb-3">Daily Need</p>
-                        <h3 className="text-lg font-serif text-white/90 line-clamp-2 leading-tight mb-4 group-hover:text-lekki-lime transition-colors">
-                            {product.name}
-                        </h3>
-                    </div>
+    const hasDiscount = product.price !== product.discountedPrice && product.discountedPrice > 0;
 
-                    <div className="mt-4 pt-6 border-t border-white/5 flex items-end justify-between">
-                        <div>
-                            <p className="text-[10px] text-white/30 font-bold mb-1">₦{product.price.toLocaleString()}</p>
-                            <p className="text-2xl font-black text-lekki-lime tracking-tight">
+    return (
+        <div className="group bg-lekki-gray rounded-md overflow-hidden border border-white/5 hover:border-lekki-lime/30 transition-all duration-300 flex flex-col">
+            <Link href={`/product/${product.id}`} className="flex flex-col grow">
+
+                {/* Image — fills section completely */}
+                <div className="relative w-full aspect-square overflow-hidden bg-lekki-black">
+                    <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                    />
+
+                    {/* Out of stock overlay */}
+                    {!product.inStock && (
+                        <div className="absolute inset-0 bg-lekki-black/60 flex items-center justify-center">
+                            <span className="text-[9px] font-black text-white/60 bg-black/60 px-3 py-1 rounded-full border border-white/10">
+                                Out of stock
+                            </span>
+                        </div>
+                    )}
+
+                    {/* Discount badge */}
+                    {hasDiscount && (
+                        <div className="absolute top-2 right-2 bg-lekki-lime text-lekki-black text-[9px] font-black px-2 py-0.5 rounded-full">
+                            DEAL
+                        </div>
+                    )}
+                </div>
+
+                {/* Info */}
+                <div className="p-4 flex flex-col grow">
+                    <p className="text-[9px] text-lekki-lime font-black mb-1.5 uppercase tracking-wide">{product.category}</p>
+                    <h3 className="text-sm font-bold text-white/90 line-clamp-2 leading-snug mb-4 group-hover:text-lekki-lime transition-colors grow">
+                        {product.name}
+                    </h3>
+
+                    {/* Price row + add button — inline, no overflow */}
+                    <div className="flex items-center justify-between gap-2 mt-auto pt-3 border-t border-white/5">
+                        <div className="min-w-0">
+                            {hasDiscount && (
+                                <p className="text-[10px] text-white/25 font-bold line-through leading-none mb-0.5">
+                                    ₦{product.price.toLocaleString()}
+                                </p>
+                            )}
+                            <p className="text-lg font-black text-lekki-lime tracking-tight leading-none">
                                 ₦{product.discountedPrice.toLocaleString()}
                             </p>
                         </div>
+
+                        <button
+                            onClick={handleAddToCart}
+                            disabled={!product.inStock}
+                            className="flex-shrink-0 w-9 h-9 bg-lekki-lime text-lekki-black rounded-md flex items-center justify-center hover:bg-white active:scale-90 transition-all disabled:opacity-25 disabled:cursor-not-allowed"
+                            aria-label={`Add ${product.name} to cart`}
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
             </Link>
-            
-            <button 
-                onClick={handleAddToCart}
-                className="absolute right-8 bottom-8 bg-lekki-lime text-lekki-black w-14 h-14 rounded-md flex items-center justify-center hover:bg-white transition-all group/btn shadow-lg shadow-lekki-lime/10 active:scale-90 z-20"
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                </svg>
-            </button>
         </div>
     );
 };

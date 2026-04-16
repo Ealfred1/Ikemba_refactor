@@ -14,10 +14,10 @@ export const Header: React.FC = () => {
             <div className="flex items-center gap-4">
                 <Link href="/" className="flex items-center gap-3">
                     <div className="relative w-12 h-12 overflow-hidden">
-                        <Image 
-                            src="/branding/logo.png" 
-                            alt="Lekki Mart" 
-                            fill 
+                        <Image
+                            src="/o8x5ZQT9LFCkNbmR8zcin.png"
+                            alt="Lekki Mart"
+                            fill
                             className="object-contain"
                             priority
                         />
@@ -27,19 +27,22 @@ export const Header: React.FC = () => {
                     </div>
                 </Link>
             </div>
-            
+
             <nav className="hidden md:flex gap-10 items-center">
                 <a href="#" className="text-[10px] font-bold text-white/50 hover:text-lekki-lime transition-colors">Supermarket</a>
                 <a href="#" className="text-[10px] font-bold text-white/50 hover:text-lekki-lime transition-colors">Daily Needs</a>
                 <a href="#" className="text-[10px] font-bold text-white/50 hover:text-lekki-lime transition-colors">Essential Goods</a>
-                
-                <button 
+
+                <button
                     onClick={openDrawer}
                     className="group relative px-6 py-2 overflow-hidden rounded-full border border-lekki-lime/30 hover:border-lekki-lime transition-all bg-transparent flex items-center gap-2"
                 >
+                    <svg className="relative z-10 w-4 h-4 text-lekki-lime group-hover:text-lekki-black transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
                     <span className="relative z-10 text-[10px] font-bold text-lekki-lime group-hover:text-lekki-black">Your Bag</span>
                     {itemCount > 0 && (
-                        <span className="relative z-10 bg-lekki-lime text-lekki-black text-[8px] font-black w-4 h-4 rounded-full flex items-center justify-center">
+                        <span className="relative z-10 bg-lekki-lime text-lekki-black text-[8px] font-black w-5 h-5 rounded-full flex items-center justify-center">
                             {itemCount}
                         </span>
                     )}

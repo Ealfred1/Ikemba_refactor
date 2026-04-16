@@ -1,21 +1,24 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getProductBySku } from '@/lib/products';
+import { NextResponse } from 'next/server';
+import { getProductById } from '@/lib/chowdeck';
 
 export async function GET(
-    request: NextRequest,
-    { params }: { params: { sku: string } }
+    request: Request,
+    { params }: { params: Promise<{ sku: string }> }
 ) {
     try {
-        const sku = params.sku;
-        const product = await getProductBySku(sku);
-        
+        const { sku } = await params;
+        const product = await getProductById(sku);
+
         if (!product) {
             return NextResponse.json({ error: 'Product not found' }, { status: 404 });
         }
-        
+
         return NextResponse.json(product);
     } catch (error) {
-        console.error('Failed to fetch product:', error);
-        return NextResponse.json({ error: 'Failed to fetch product' }, { status: 500 });
+        console.error('[/api/products/[sku]] Failed:', error);
+        return NextResponse.json(
+            { error: 'Failed to fetch product' },
+            { status: 500 }
+        );
     }
 }

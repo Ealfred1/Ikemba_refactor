@@ -51,7 +51,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
             }
             return [...prev, { ...item, quantity: 1 }];
         });
-        openDrawer();
+        // Drawer is opened intentionally by the user via the Header button
     };
 
     const removeItem = (id: number) => {
