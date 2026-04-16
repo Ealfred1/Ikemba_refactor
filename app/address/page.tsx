@@ -70,6 +70,28 @@ export default function AddressPage() {
                                 </div>
                             </div>
 
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                <div className="space-y-3 group">
+                                    <label className="text-[10px] font-black text-lekki-lime opacity-40 group-focus-within:opacity-100 transition-opacity">Phone Number</label>
+                                    <div className="flex items-center border-b-2 border-white/5 focus-within:border-lekki-lime transition-colors">
+                                        <span className="text-white/30 font-bold text-sm py-4 pr-3 select-none">+234</span>
+                                        <input
+                                            type="tel"
+                                            className="flex-1 bg-transparent py-4 focus:outline-none text-white font-medium"
+                                            placeholder="0701 242 8801"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="space-y-3 group">
+                                    <label className="text-[10px] font-black text-lekki-lime opacity-40 group-focus-within:opacity-100 transition-opacity">Email Address <span className="text-white/20 font-bold normal-case">(optional)</span></label>
+                                    <input
+                                        type="email"
+                                        className="w-full bg-transparent border-b-2 border-white/5 py-4 focus:outline-none focus:border-lekki-lime transition-colors text-white font-medium"
+                                        placeholder="you@example.com"
+                                    />
+                                </div>
+                            </div>
+
                             <div className="pt-10 flex flex-col md:flex-row gap-6">
                                 <Link 
                                     href="/checkout"

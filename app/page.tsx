@@ -31,11 +31,13 @@ interface CategoryInfo {
 }
 
 interface Product {
+    id: number;
     sku: string;
-    barcode: string;
     name: string;
+    description: string;
     price: number;
     discountedPrice: number;
+    inStock: boolean;
     image: string;
     category: string;
 }

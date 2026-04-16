@@ -219,14 +219,14 @@ export async function getCategories(): Promise<{ name: string; count: number }[]
         counts[p.category] = (counts[p.category] || 0) + 1;
     }
 
-    // Return in our preferred display order, excluding empty categories
-    return KNOWN_CATEGORIES
+    // Return in our preferred display order, then append any unexpected new categories
+    const ordered: { name: string; count: number }[] = KNOWN_CATEGORIES
         .filter(cat => counts[cat] > 0)
-        .map(cat => ({ name: cat, count: counts[cat] }))
-        .concat(
-            // Also include any new categories Chowdeck adds that aren't in our list
-            Object.entries(counts)
-                .filter(([name]) => !KNOWN_CATEGORIES.includes(name as typeof KNOWN_CATEGORIES[number]))
-                .map(([name, count]) => ({ name, count }))
-        );
+        .map(cat => ({ name: cat as string, count: counts[cat] }));
+
+    const extras = Object.entries(counts)
+        .filter(([name]) => !KNOWN_CATEGORIES.includes(name as typeof KNOWN_CATEGORIES[number]))
+        .map(([name, count]) => ({ name, count }));
+
+    return [...ordered, ...extras];
 }
