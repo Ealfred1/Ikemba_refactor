@@ -75,6 +75,16 @@ export default function Home() {
         setActiveCategory(next);
         setSearchQuery('');
         loadProducts(next);
+
+        // Auto-scroll to products on mobile/small screens if a category is selected
+        if (next) {
+            setTimeout(() => {
+                document.getElementById('product-list')?.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+            }, 100);
+        }
     };
 
     const filteredProducts = searchQuery.trim()
@@ -122,8 +132,8 @@ export default function Home() {
             <section id="categories" className="py-24 px-6 md:px-12 bg-lekki-black border-t border-white/5">
                 <div className="container mx-auto">
                     <div className="mb-16">
-                        <p className="text-[10px] font-black text-lekki-lime mb-4">Shop by Category</p>
-                        <h2 className="text-4xl md:text-5xl font-serif text-white leading-tight">What are you after?</h2>
+                        <p className="text-[10px] font-black text-lekki-lime mb-4 text-center md:text-left">Shop by Category</p>
+                        <h2 className="text-4xl md:text-5xl font-serif text-white leading-tight text-center md:text-left">What are you after?</h2>
                     </div>
 
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-16">
@@ -153,7 +163,7 @@ export default function Home() {
 
                     {/* Product listing — only shows when a category is selected */}
                     {(activeCategory || products.length > 0) && (
-                        <div>
+                        <div id="product-list" className="scroll-mt-32">
                             {/* Toolbar */}
                             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
                                 <div>

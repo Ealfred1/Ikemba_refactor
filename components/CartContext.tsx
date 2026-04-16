@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
 interface CartItem {
     id: number;
@@ -64,6 +64,43 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     const [items, setItems] = useState<CartItem[]>([]);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [deliveryInfo, setDeliveryInfo] = useState<DeliveryInfo>(INITIAL_DELIVERY);
+    const [isInitialized, setIsInitialized] = useState(false);
+
+    // Initial load from localStorage
+    useEffect(() => {
+        const storedItems = localStorage.getItem('lekki-mart-cart');
+        const storedInfo = localStorage.getItem('lekki-mart-delivery');
+
+        if (storedItems) {
+            try {
+                setItems(JSON.parse(storedItems));
+            } catch (e) {
+                console.error('Error parsing cart items', e);
+            }
+        }
+
+        if (storedInfo) {
+            try {
+                setDeliveryInfo(JSON.parse(storedInfo));
+            } catch (e) {
+                console.error('Error parsing delivery info', e);
+            }
+        }
+        
+        setIsInitialized(true);
+    }, []);
+
+    // Persist to localStorage whenever state changes
+    useEffect(() => {
+        if (!isInitialized) return;
+        
+        localStorage.setItem('lekki-mart-cart', JSON.stringify(items));
+        localStorage.setItem('lekki-mart-delivery', JSON.stringify(deliveryInfo));
+
+        // Sync a small cookie for server-side visibility if needed
+        const count = items.reduce((acc, item) => acc + item.quantity, 0);
+        document.cookie = `cart_count=${count}; path=/; max-age=31536000; SameSite=Strict`;
+    }, [items, deliveryInfo, isInitialized]);
 
     const openDrawer = () => setIsDrawerOpen(true);
     const closeDrawer = () => setIsDrawerOpen(false);
@@ -87,6 +124,8 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     const clearCart = () => {
         setItems([]);
         setDeliveryInfo(INITIAL_DELIVERY);
+        localStorage.removeItem('lekki-mart-cart');
+        localStorage.removeItem('lekki-mart-delivery');
     };
 
     const updateDeliveryInfo = (info: Partial<DeliveryInfo>) => {
