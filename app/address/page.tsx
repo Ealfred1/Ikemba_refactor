@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useCart } from '@/components/CartContext';
 
 // Mock coordinates for Lekki clusters to demonstrate fee calculation
@@ -100,9 +101,20 @@ export default function AddressPage() {
                     {/* Visual Segment */}
                     <div className="w-full md:w-1/3 bg-lekki-black text-white p-12 flex flex-col justify-between relative overflow-hidden border-r border-white/5">
                         <div className="relative z-10">
-                            <div className="flex items-center gap-3 mb-12">
-                                <Link href="/" className="w-8 h-8 bg-lekki-lime rounded-lg flex items-center justify-center text-lekki-black font-black text-lg hover:bg-white transition-colors">L</Link>
-                                <span className="font-antonio text-xl font-bold tracking-tighter text-lekki-lime uppercase">LEKKI MART</span>
+                            <div className="flex items-center gap-4 mb-12">
+                                <Link href="/" className="flex items-center gap-3 group">
+                                    <div className="relative w-10 h-10 overflow-hidden group-hover:scale-110 transition-transform">
+                                        <Image
+                                            src="/o8x5ZQT9LFCkNbmR8zcin.png"
+                                            alt="Lekki Mart"
+                                            fill
+                                            className="object-contain"
+                                        />
+                                    </div>
+                                    <div className="logo font-antonio text-2xl font-bold tracking-tighter text-lekki-lime uppercase leading-none">
+                                        LEKKI MART
+                                    </div>
+                                </Link>
                             </div>
                             <h2 className="text-5xl font-serif leading-tight mb-6">Logistics<br />Detail</h2>
                             <p className="text-white/30 text-[10px] font-black leading-loose">Enter your coordinates for agba delivery tier.</p>

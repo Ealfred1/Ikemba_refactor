@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useCart } from '@/components/CartContext';
 
 export default function CheckoutPage() {
@@ -108,9 +109,20 @@ export default function CheckoutPage() {
                     {/* Payment Side */}
                     <div className="w-full md:w-[60%] p-8 md:p-16 order-2 md:order-1">
                         <div className="mb-14">
-                            <div className="flex items-center gap-3 mb-10">
-                                <Link href="/" className="w-10 h-10 bg-lekki-lime rounded-xl flex items-center justify-center text-lekki-black font-black text-xl hover:bg-white transition-colors">L</Link>
-                                <span className="font-antonio text-2xl font-bold tracking-tighter text-lekki-lime uppercase">LEKKI MART</span>
+                            <div className="flex items-center gap-4 mb-10">
+                                <Link href="/" className="flex items-center gap-3 group">
+                                    <div className="relative w-10 h-10 overflow-hidden group-hover:scale-110 transition-transform">
+                                        <Image
+                                            src="/o8x5ZQT9LFCkNbmR8zcin.png"
+                                            alt="Lekki Mart"
+                                            fill
+                                            className="object-contain"
+                                        />
+                                    </div>
+                                    <div className="logo font-antonio text-2xl font-bold tracking-tighter text-lekki-lime uppercase leading-none">
+                                        LEKKI MART
+                                    </div>
+                                </Link>
                             </div>
                             <h2 className="text-5xl font-serif text-white mb-4">Secure Checkout</h2>
                             <p className="text-lekki-lime text-[10px] font-black opacity-40 uppercase tracking-widest">Tier: Agba Premium Supermarket</p>
