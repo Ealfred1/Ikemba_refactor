@@ -33,7 +33,7 @@ export default function RootLayout({
             <body className={`${fontAntonio.variable} ${fontBricolage.variable} antialiased font-sans`}>
                 <ThemeProvider
                     attribute="class"
-                    defaultTheme="dark"
+                    defaultTheme="light"
                     enableSystem
                     disableTransitionOnChange
                 >
