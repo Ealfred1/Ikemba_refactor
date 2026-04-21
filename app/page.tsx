@@ -249,7 +249,7 @@ export default function Home() {
                         </div>
 
                         <div className="md:col-span-2">
-                            <h4 className="text-sm font-black mb-10 text-lekki-lime uppercase tracking-tight">Shop Tier</h4>
+                            <h4 className="text-sm font-black mb-10 text-lekki-lime uppercase tracking-tight">Browse</h4>
                             <ul className="space-y-4 text-xs font-bold text-foreground">
                                 <li className="hover:text-lekki-lime transition-colors cursor-pointer">Supermarket</li>
                                 <li className="hover:text-lekki-lime transition-colors cursor-pointer">Liquor Store</li>
@@ -261,10 +261,8 @@ export default function Home() {
                         <div className="md:col-span-2">
                             <h4 className="text-sm font-black mb-10 text-lekki-lime uppercase tracking-tight">Service</h4>
                             <ul className="space-y-4 text-xs font-bold text-foreground">
-                                <li className="hover:text-lekki-lime transition-colors cursor-pointer">Onboarding</li>
                                 <li className="hover:text-lekki-lime transition-colors cursor-pointer">Delivery Maps</li>
                                 <li className="hover:text-lekki-lime transition-colors cursor-pointer">Returns Policy</li>
-                                <li className="hover:text-lekki-lime transition-colors cursor-pointer">Audit Logs</li>
                             </ul>
                         </div>
 
@@ -276,11 +274,7 @@ export default function Home() {
                                     placeholder="Supermarket News"
                                     className="bg-transparent border-b border-foreground/20 py-3 outline-none focus:border-lekki-lime transition-colors w-full text-xs font-bold"
                                 />
-                                <button className="text-[10px] font-black text-lekki-lime hover:text-foreground transition-colors">Apply</button>
-                            </div>
-                            <div className="p-4 bg-lekki-lime/5 rounded-md border border-lekki-lime/10">
-                                <p className="text-xs font-bold text-foreground/80 mb-2 uppercase tracking-tighter">Business Tier</p>
-                                <p className="text-2xl font-sans font-black text-lekki-lime uppercase italic tracking-tighter">PREMIUM TIER</p>
+                                <button className="text-xs font-black text-lekki-lime hover:text-foreground transition-colors shrink-0">Apply</button>
                             </div>
                         </div>
                     </div>
@@ -290,7 +284,6 @@ export default function Home() {
                         <div className="flex gap-8">
                             <a href="#" className="hover:text-lekki-lime transition-colors">Privacy</a>
                             <a href="#" className="hover:text-lekki-lime transition-colors">Terms</a>
-                            <a href="#" className="hover:text-lekki-lime transition-colors">Developer</a>
                         </div>
                     </div>
                 </div>
