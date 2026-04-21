@@ -42,7 +42,7 @@ export const Header: React.FC = () => {
                                 priority
                             />
                         </div>
-                        <div className="logo font-antonio text-2xl font-bold tracking-tighter text-lekki-lime uppercase leading-none">
+                        <div className="logo font-antonio text-2xl font-bold tracking-tighter text-foreground uppercase leading-none">
                             LEKKI MART
                         </div>
                     </Link>
@@ -80,7 +80,7 @@ export const Header: React.FC = () => {
                 {/* Mobile Icons Group */}
                 <div className="flex md:hidden items-center gap-5">
                     {/* Cart Trigger */}
-                    <button onClick={openDrawer} className="relative p-2 text-white/60 hover:text-lekki-lime transition-colors">
+                    <button onClick={openDrawer} className="relative p-2 text-foreground/60 hover:text-lekki-lime transition-colors">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                         </svg>
@@ -94,41 +94,32 @@ export const Header: React.FC = () => {
                     {/* Animated Hamburger */}
                     <button
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
-                        className="relative z-[60] w-6 h-6 flex flex-col justify-center gap-1.5 overflow-hidden"
+                        className="relative z-[110] w-6 h-6 flex flex-col justify-center gap-1.5"
                     >
-                        <span className={`w-full h-0.5 bg-lekki-lime transition-all duration-300 ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
-                        <span className={`w-full h-0.5 bg-lekki-lime transition-all duration-300 ${isMenuOpen ? 'opacity-0 -translate-x-full' : ''}`} />
-                        <span className={`w-full h-0.5 bg-lekki-lime transition-all duration-300 ${isMenuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+                        <span className={`w-full h-0.5 bg-foreground transition-all duration-300 ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
+                        <span className={`w-full h-0.5 bg-foreground transition-all duration-300 ${isMenuOpen ? 'opacity-0 -translate-x-full' : ''}`} />
+                        <span className={`w-full h-0.5 bg-foreground transition-all duration-300 ${isMenuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
                     </button>
                 </div>
             </div>
 
-            {/* Mobile Menu Drawer */}
-            <div className={`fixed inset-0 z-50 md:hidden transition-all duration-500 ease-in-out ${isMenuOpen ? 'visible opacity-100' : 'invisible opacity-0'}`}>
-                {/* Backdrop */}
-                <div
-                    className="absolute inset-0 bg-background/95 backdrop-blur-2xl"
-                    onClick={() => setIsMenuOpen(false)}
-                />
-
-                {/* Drawer Content */}
-                <div className={`relative h-full flex flex-col items-center justify-center gap-12 p-12 transition-transform duration-500 ${isMenuOpen ? 'translate-y-0' : '-translate-y-10'}`}>
-                    <div className="flex flex-col items-center gap-8 text-center uppercase">
-                        <Link href="/" onClick={() => setIsMenuOpen(false)} className="text-2xl font-serif text-foreground hover:text-lekki-lime transition-colors">Supermarket</Link>
-                        <Link href="/" onClick={() => setIsMenuOpen(false)} className="text-2xl font-serif text-foreground hover:text-lekki-lime transition-colors">Daily Needs</Link>
-                        <Link href="/" onClick={() => setIsMenuOpen(false)} className="text-2xl font-serif text-foreground hover:text-lekki-lime transition-colors">Essential Goods</Link>
-                    </div>
-
-                    <div className="flex items-center gap-8">
+            {/* Mobile Dropdown Menu */}
+            <div className={`absolute top-full left-0 w-full bg-background border-b border-border shadow-2xl md:hidden overflow-hidden transition-all duration-500 ease-in-out ${isMenuOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                <div className="flex flex-col p-8 gap-6 uppercase">
+                    <Link href="/" onClick={() => setIsMenuOpen(false)} className="text-lg font-serif text-foreground hover:text-lekki-lime transition-colors">Supermarket</Link>
+                    <Link href="/" onClick={() => setIsMenuOpen(false)} className="text-lg font-serif text-foreground hover:text-lekki-lime transition-colors">Daily Needs</Link>
+                    <Link href="/" onClick={() => setIsMenuOpen(false)} className="text-lg font-serif text-foreground hover:text-lekki-lime transition-colors">Essential Goods</Link>
+                    
+                    <div className="pt-6 border-t border-border flex items-center justify-between">
                         <button
                             onClick={() => {
                                 setIsMenuOpen(false);
                                 openDrawer();
                             }}
-                            className="px-8 py-4 bg-lekki-lime text-lekki-black font-black rounded-md shadow-2xl shadow-lekki-lime/20 flex items-center gap-4"
+                            className="bg-lekki-lime text-lekki-black px-6 py-3 rounded-md font-black text-xs flex items-center gap-3"
                         >
-                            <span>BAG</span>
-                            <span className="w-6 h-6 bg-lekki-black/10 rounded-full flex items-center justify-center text-[10px]">
+                            <span>SHOP BAG</span>
+                            <span className="w-5 h-5 bg-lekki-black/10 rounded-full flex items-center justify-center text-[10px]">
                                 {itemCount}
                             </span>
                         </button>
@@ -136,18 +127,18 @@ export const Header: React.FC = () => {
                         {mounted && (
                             <button
                                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                                className="p-4 rounded-full border border-border bg-surface text-foreground"
+                                className="p-3 rounded-full border border-border bg-surface text-foreground"
                                 aria-label="Toggle theme"
                             >
-                                {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+                                {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
                             </button>
                         )}
                     </div>
 
                     {/* Store Contact Mini Info */}
-                    <div className="mt-12 text-center opacity-30">
-                        <p className="text-xs font-black text-lekki-lime uppercase tracking-tight mb-1">Lekki Mart Supermarket</p>
-                        <p className="text-[10px] font-black uppercase tracking-tighter text-foreground">11b Shafi Sule St, Lekki Phase I</p>
+                    <div className="mt-4 pt-4 border-t border-border/50 opacity-30">
+                        <p className="text-[10px] font-black text-lekki-lime uppercase tracking-tight mb-0.5">Lekki Mart Supermarket</p>
+                        <p className="text-[9px] font-black uppercase tracking-tighter text-foreground">11b Shafi Sule St, Lekki Phase I</p>
                     </div>
                 </div>
             </div>
