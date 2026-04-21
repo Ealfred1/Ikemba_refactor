@@ -85,7 +85,7 @@ export default function Home() {
             <Header />
 
             {/* Hero */}
-            <section className="pt-32 md:pt-24 pb-12 relative overflow-hidden bg-background">
+            <section className="pt-32 md:pt-24 pb-12 px-6 md:px-12 relative overflow-hidden bg-background">
                 <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-lekki-lime/10 rounded-full blur-[150px] -mr-40 -mt-20 pointer-events-none" />
                 <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-lekki-lime/5 rounded-full blur-[100px] -ml-20 -mb-20 pointer-events-none" />
 
@@ -128,7 +128,7 @@ export default function Home() {
             </section>
 
             {/* Categories Grid */}
-            <section id="categories" className="py-24 bg-background border-t border-border">
+            <section id="categories" className="py-24 px-6 md:px-12 bg-background border-t border-border">
                 <div className="container mx-auto">
                     <div className="mb-8">
                         <p className="text-xs font-black text-foreground/60 mb-4 text-center md:text-left uppercase tracking-tight">Shop by Category</p>
@@ -212,7 +212,7 @@ export default function Home() {
             </section>
 
             {/* Footer */}
-            <footer className="bg-surface text-foreground py-32 border-t border-border">
+            <footer className="bg-surface text-foreground py-32 px-6 md:px-12 border-t border-border">
                 <div className="container mx-auto">
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-16 md:gap-8 mb-24">
                         <div className="md:col-span-5">

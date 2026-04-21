@@ -96,7 +96,7 @@ export default function CheckoutPage() {
     }
 
     return (
-        <main className="min-h-screen bg-background relative flex items-center justify-center py-10 md:py-20 px-4 font-sans text-foreground">
+        <main className="min-h-screen bg-background relative flex items-center justify-center py-10 md:py-20 px-6 md:px-12 font-sans text-foreground">
             {/* Background Detail */}
             <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden blur-[120px] opacity-10">
                 <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-lekki-lime animate-float"></div>
