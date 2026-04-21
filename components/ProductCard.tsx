@@ -27,11 +27,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     const hasDiscount = product.price !== product.discountedPrice && product.discountedPrice > 0;
 
     return (
-        <div className="group bg-lekki-gray rounded-md overflow-hidden border border-white/5 hover:border-lekki-lime/30 transition-all duration-300 flex flex-col">
+        <div className="group bg-surface rounded-md overflow-hidden border border-border hover:border-lekki-lime/30 transition-all duration-300 flex flex-col">
             <Link href={`/product/${product.id}`} className="flex flex-col grow">
 
                 {/* Image — fills section completely */}
-                <div className="relative w-full aspect-square overflow-hidden bg-lekki-black">
+                <div className="relative w-full aspect-square overflow-hidden bg-background">
                     <img
                         src={product.image}
                         alt={product.name}
@@ -41,8 +41,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
                     {/* Out of stock overlay */}
                     {!product.inStock && (
-                        <div className="absolute inset-0 bg-lekki-black/60 flex items-center justify-center">
-                            <span className="text-[9px] font-black text-white/60 bg-black/60 px-3 py-1 rounded-full border border-white/10">
+                        <div className="absolute inset-0 bg-background/60 flex items-center justify-center">
+                            <span className="text-xs font-black text-foreground/60 bg-surface/60 px-3 py-1 rounded-full border border-border">
                                 Out of stock
                             </span>
                         </div>
@@ -50,7 +50,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
                     {/* Discount badge */}
                     {hasDiscount && (
-                        <div className="absolute top-2 right-2 bg-lekki-lime text-lekki-black text-[9px] font-black px-2 py-0.5 rounded-full">
+                        <div className="absolute top-2 right-2 bg-lekki-lime text-lekki-black text-[11px] font-black px-2 py-0.5 rounded-full">
                             DEAL
                         </div>
                     )}
@@ -58,16 +58,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
                 {/* Info */}
                 <div className="p-4 flex flex-col grow">
-                    <p className="text-[9px] text-lekki-lime font-black mb-1.5 uppercase tracking-wide">{product.category}</p>
-                    <h3 className="text-sm font-bold text-white/90 line-clamp-2 leading-snug mb-4 group-hover:text-lekki-lime transition-colors grow">
+                    <p className="text-xs text-foreground/60 font-black mb-1.5 uppercase tracking-wide">{product.category}</p>
+                    <h3 className="text-sm font-bold text-foreground/90 line-clamp-2 leading-snug mb-4 group-hover:text-lekki-lime transition-colors grow">
                         {product.name}
                     </h3>
 
                     {/* Price row + add button — inline, no overflow */}
-                    <div className="flex items-center justify-between gap-2 mt-auto pt-3 border-t border-white/5">
+                    <div className="flex items-center justify-between gap-2 mt-auto pt-3 border-t border-border">
                         <div className="min-w-0">
                             {hasDiscount && (
-                                <p className="text-[10px] text-white/25 font-bold line-through leading-none mb-0.5">
+                                <p className="text-xs text-foreground/25 font-bold line-through leading-none mb-0.5">
                                     ₦{product.price.toLocaleString()}
                                 </p>
                             )}
@@ -79,7 +79,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                         <button
                             onClick={handleAddToCart}
                             disabled={!product.inStock}
-                            className="flex-shrink-0 w-9 h-9 bg-lekki-lime text-lekki-black rounded-md flex items-center justify-center hover:bg-white active:scale-90 transition-all disabled:opacity-25 disabled:cursor-not-allowed"
+                            className="flex-shrink-0 w-9 h-9 bg-lekki-lime text-lekki-black rounded-md flex items-center justify-center hover:bg-foreground hover:text-background active:scale-90 transition-all disabled:opacity-25 disabled:cursor-not-allowed"
                             aria-label={`Add ${product.name} to cart`}
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
