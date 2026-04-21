@@ -50,14 +50,14 @@ export default async function ProductPage({ params }: PageProps) {
 
     if (!product) {
         return (
-            <main className="min-h-screen bg-lekki-black">
+            <main className="min-h-screen bg-background">
                 <Header />
                 <div className="flex flex-col items-center justify-center min-h-screen gap-6 px-6">
-                    <p className="text-6xl font-black text-white/5">404</p>
-                    <p className="text-white/40 font-bold text-sm uppercase tracking-widest">Inventory Gap Found</p>
+                    <p className="text-6xl font-black text-foreground/5">404</p>
+                    <p className="text-foreground/40 font-bold text-base uppercase tracking-tight">Inventory Gap Found</p>
                     <Link
                         href="/"
-                        className="px-8 py-4 bg-lekki-lime text-lekki-black font-black rounded-md text-xs uppercase hover:bg-white transition-colors tracking-widest"
+                        className="px-8 py-4 bg-lekki-lime text-lekki-black font-black rounded-md text-sm uppercase hover:bg-foreground hover:text-background transition-colors tracking-tight"
                     >
                         Back to Store
                     </Link>
@@ -94,7 +94,7 @@ export default async function ProductPage({ params }: PageProps) {
     };
 
     return (
-        <main className="min-h-screen bg-lekki-black text-white">
+        <main className="min-h-screen bg-background text-foreground">
             {/* Inject JSON-LD */}
             <script
                 type="application/ld+json"
@@ -106,14 +106,14 @@ export default async function ProductPage({ params }: PageProps) {
             <div className="pt-28 pb-24 px-6 md:px-12">
                 <div className="container mx-auto">
                     {/* Breadcrumb */}
-                    <nav className="flex items-center gap-3 mb-12 text-[10px] font-black text-white/30 uppercase tracking-widest">
+                    <nav className="flex items-center gap-3 mb-12 text-xs font-black text-foreground/30 uppercase tracking-tight">
                         <Link href="/" className="hover:text-lekki-lime transition-colors">Home</Link>
                         <span>/</span>
                         <Link href={`/?category=${product.category}`} className="hover:text-lekki-lime transition-colors">
                             {product.category}
                         </Link>
                         <span>/</span>
-                        <span className="text-white/60 truncate max-w-[200px]">{product.name}</span>
+                        <span className="text-foreground/60 truncate max-w-[200px]">{product.name}</span>
                     </nav>
 
                     {/* Main layout */}
@@ -121,41 +121,32 @@ export default async function ProductPage({ params }: PageProps) {
 
                         {/* Left — Image */}
                         <div className="relative">
-                            <div className="relative aspect-square rounded-md overflow-hidden bg-lekki-gray border border-white/5 shadow-2xl">
+                            <div className="relative aspect-square rounded-md overflow-hidden bg-surface border border-border shadow-2xl">
                                 <img
                                     src={product.image}
                                     alt={product.name}
                                     className="w-full h-full object-cover"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-lekki-black/40 via-transparent to-transparent pointer-events-none" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent pointer-events-none" />
 
                                 {!product.inStock && (
                                     <div className="absolute top-4 left-4 px-3 py-1.5 bg-black/70 backdrop-blur-sm rounded-full border border-white/10">
-                                        <span className="text-[10px] font-black text-white/60 uppercase tracking-widest">Sold Out</span>
-                                    </div>
-                                )}
-
-                                {hasDiscount && (
-                                    <div className="absolute top-4 right-4 px-3 py-1.5 bg-lekki-lime rounded-full shadow-lg">
-                                        <span className="text-[10px] font-black text-lekki-black uppercase tracking-widest">AGBA DEAL</span>
+                                        <span className="text-xs font-black text-white/60 uppercase tracking-tight">Sold Out</span>
                                     </div>
                                 )}
                             </div>
-                            <p className="mt-4 text-[9px] font-black text-white/20 tracking-[0.3em] text-center uppercase">
-                                SKU: {product.sku}
-                            </p>
                         </div>
 
                         {/* Right — Info */}
                         <div className="flex flex-col gap-2">
                              {/* Category and Title moved to Server side for instant SEO paint */}
-                             <p className="text-[10px] font-black text-lekki-lime uppercase tracking-[0.2em] mb-3">
+                             <p className="text-xs font-black text-lekki-lime uppercase tracking-tight mb-3">
                                 {product.category}
                             </p>
-                            <h1 className="text-4xl md:text-5xl font-serif text-white leading-tight mb-4 tracking-tight">
+                            <h1 className="text-4xl md:text-5xl font-serif text-foreground leading-tight mb-4 tracking-tighter">
                                 {product.name}
                             </h1>
-                            <p className="text-white/40 text-sm leading-relaxed mb-8 max-w-xl">
+                            <p className="text-foreground/40 text-sm leading-relaxed mb-8 max-w-xl">
                                 {product.description}
                             </p>
 

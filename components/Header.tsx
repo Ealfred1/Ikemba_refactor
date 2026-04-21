@@ -5,10 +5,19 @@ import Link from 'next/link';
 import { useCart } from './CartContext';
 import Image from 'next/image';
 
+import { useTheme } from 'next-themes';
+import { Sun, Moon } from 'lucide-react';
+
 export const Header: React.FC = () => {
+    const { theme, setTheme } = useTheme();
+    const [mounted, setMounted] = useState(false);
     const { openDrawer, items } = useCart();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const itemCount = items.reduce((acc, item) => acc + item.quantity, 0);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     // Lock body scroll when mobile menu is open
     useEffect(() => {
@@ -19,17 +28,9 @@ export const Header: React.FC = () => {
         }
     }, [isMenuOpen]);
 
-    const NavLinks = () => (
-        <>
-            <Link href="/" className="text-[10px] font-bold text-white/50 hover:text-lekki-lime transition-colors uppercase tracking-widest">Supermarket</Link>
-            <Link href="/" className="text-[10px] font-bold text-white/50 hover:text-lekki-lime transition-colors uppercase tracking-widest">Daily Needs</Link>
-            <Link href="/" className="text-[10px] font-bold text-white/50 hover:text-lekki-lime transition-colors uppercase tracking-widest">Essential Goods</Link>
-        </>
-    );
-
     return (
-        <header className="fixed top-0 left-0 w-full z-50 px-6 md:px-12 py-5 bg-lekki-black/80 backdrop-blur-xl border-b border-white/5">
-            <div className="flex justify-between items-center max-w-7xl mx-auto">
+        <header className="fixed top-0 left-0 w-full z-50 px-6 md:px-12 py-5 bg-background/80 backdrop-blur-xl border-b border-border transition-all duration-300">
+            <div className="container mx-auto flex justify-between items-center">
                 <div className="flex items-center gap-4">
                     <Link href="/" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3">
                         <div className="relative w-12 h-12 overflow-hidden">
@@ -41,15 +42,23 @@ export const Header: React.FC = () => {
                                 priority
                             />
                         </div>
-                        <div className="logo font-antonio text-2xl font-bold tracking-tighter text-lekki-lime uppercase leading-none">
+                        <div className="logo font-antonio text-2xl font-bold tracking-tighter text-foreground uppercase leading-none">
                             LEKKI MART
                         </div>
                     </Link>
                 </div>
 
                 {/* Desktop Nav */}
-                <nav className="hidden md:flex gap-10 items-center">
-                    <NavLinks />
+                <nav className="hidden md:flex gap-6 items-center">
+                    {mounted && (
+                        <button
+                            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                            className="p-2 rounded-full border border-border hover:bg-surface transition-all text-foreground/60 hover:text-lekki-lime"
+                            aria-label="Toggle theme"
+                        >
+                            {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+                        </button>
+                    )}
 
                     <button
                         onClick={openDrawer}
@@ -71,7 +80,7 @@ export const Header: React.FC = () => {
                 {/* Mobile Icons Group */}
                 <div className="flex md:hidden items-center gap-5">
                     {/* Cart Trigger */}
-                    <button onClick={openDrawer} className="relative p-2 text-white/60 hover:text-lekki-lime transition-colors">
+                    <button onClick={openDrawer} className="relative p-2 text-foreground/60 hover:text-lekki-lime transition-colors">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                         </svg>
@@ -83,50 +92,53 @@ export const Header: React.FC = () => {
                     </button>
 
                     {/* Animated Hamburger */}
-                    <button 
+                    <button
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
-                        className="relative z-[60] w-6 h-6 flex flex-col justify-center gap-1.5 overflow-hidden"
+                        className="relative z-[110] w-6 h-6 flex flex-col justify-center gap-1.5"
                     >
-                        <span className={`w-full h-0.5 bg-lekki-lime transition-all duration-300 ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
-                        <span className={`w-full h-0.5 bg-lekki-lime transition-all duration-300 ${isMenuOpen ? 'opacity-0 -translate-x-full' : ''}`} />
-                        <span className={`w-full h-0.5 bg-lekki-lime transition-all duration-300 ${isMenuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+                        <span className={`w-full h-0.5 bg-foreground transition-all duration-300 ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
+                        <span className={`w-full h-0.5 bg-foreground transition-all duration-300 ${isMenuOpen ? 'opacity-0 -translate-x-full' : ''}`} />
+                        <span className={`w-full h-0.5 bg-foreground transition-all duration-300 ${isMenuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
                     </button>
                 </div>
             </div>
 
-            {/* Mobile Menu Drawer */}
-            <div className={`fixed inset-0 z-50 md:hidden transition-all duration-500 ease-in-out ${isMenuOpen ? 'visible opacity-100' : 'invisible opacity-0'}`}>
-                {/* Backdrop */}
-                <div 
-                    className="absolute inset-0 bg-lekki-black/95 backdrop-blur-2xl"
-                    onClick={() => setIsMenuOpen(false)}
-                />
-                
-                {/* Drawer Content */}
-                <div className={`relative h-full flex flex-col items-center justify-center gap-12 p-12 transition-transform duration-500 ${isMenuOpen ? 'translate-y-0' : '-translate-y-10'}`}>
-                    <div className="flex flex-col items-center gap-8 text-center uppercase">
-                        <Link href="/" onClick={() => setIsMenuOpen(false)} className="text-2xl font-serif text-white hover:text-lekki-lime transition-colors">Supermarket</Link>
-                        <Link href="/" onClick={() => setIsMenuOpen(false)} className="text-2xl font-serif text-white hover:text-lekki-lime transition-colors">Daily Needs</Link>
-                        <Link href="/" onClick={() => setIsMenuOpen(false)} className="text-2xl font-serif text-white hover:text-lekki-lime transition-colors">Essential Goods</Link>
+            {/* Mobile Dropdown Menu */}
+            <div className={`absolute top-full left-0 w-full bg-background border-b border-border shadow-2xl md:hidden overflow-hidden transition-all duration-500 ease-in-out ${isMenuOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                <div className="flex flex-col p-8 gap-6 uppercase">
+                    <Link href="/" onClick={() => setIsMenuOpen(false)} className="text-lg font-serif text-foreground hover:text-lekki-lime transition-colors">Supermarket</Link>
+                    <Link href="/" onClick={() => setIsMenuOpen(false)} className="text-lg font-serif text-foreground hover:text-lekki-lime transition-colors">Daily Needs</Link>
+                    <Link href="/" onClick={() => setIsMenuOpen(false)} className="text-lg font-serif text-foreground hover:text-lekki-lime transition-colors">Essential Goods</Link>
+                    
+                    <div className="pt-6 border-t border-border flex items-center justify-between">
+                        <button
+                            onClick={() => {
+                                setIsMenuOpen(false);
+                                openDrawer();
+                            }}
+                            className="bg-lekki-lime text-lekki-black px-6 py-3 rounded-md font-black text-xs flex items-center gap-3"
+                        >
+                            <span>SHOP BAG</span>
+                            <span className="w-5 h-5 bg-lekki-black/10 rounded-full flex items-center justify-center text-[10px]">
+                                {itemCount}
+                            </span>
+                        </button>
+
+                        {mounted && (
+                            <button
+                                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                                className="p-3 rounded-full border border-border bg-surface text-foreground"
+                                aria-label="Toggle theme"
+                            >
+                                {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+                            </button>
+                        )}
                     </div>
 
-                    <button
-                        onClick={() => {
-                            setIsMenuOpen(false);
-                            openDrawer();
-                        }}
-                        className="mt-8 px-12 py-5 bg-lekki-lime text-lekki-black font-black rounded-md shadow-2xl shadow-lekki-lime/20 flex items-center gap-4"
-                    >
-                        <span>OPEN YOUR BAG</span>
-                        <span className="w-6 h-6 bg-lekki-black/10 rounded-full flex items-center justify-center text-[10px]">
-                            {itemCount}
-                        </span>
-                    </button>
-
                     {/* Store Contact Mini Info */}
-                    <div className="mt-12 text-center opacity-30">
-                        <p className="text-[10px] font-black text-lekki-lime uppercase tracking-widest mb-1">Lekki Mart Supermarket</p>
-                        <p className="text-[8px] font-black uppercase tracking-tighter">11b Shafi Sule St, Lekki Phase I</p>
+                    <div className="mt-4 pt-4 border-t border-border/50 opacity-30">
+                        <p className="text-[10px] font-black text-lekki-lime uppercase tracking-tight mb-0.5">Lekki Mart Supermarket</p>
+                        <p className="text-[9px] font-black uppercase tracking-tighter text-foreground">11b Shafi Sule St, Lekki Phase I</p>
                     </div>
                 </div>
             </div>

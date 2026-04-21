@@ -88,7 +88,7 @@ export default function AddressPage() {
     };
 
     return (
-        <main className="min-h-screen bg-lekki-black relative flex items-center justify-center py-20 px-4 font-sans">
+        <main className="min-h-screen bg-background relative flex items-center justify-center py-20 px-6 md:px-12 font-sans text-foreground">
             {/* Background Detail */}
             <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden blur-[120px] opacity-10">
                 <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-lekki-lime animate-float"></div>
@@ -96,10 +96,10 @@ export default function AddressPage() {
             </div>
 
             <div className="container mx-auto relative z-10 max-w-6xl">
-                <div className="bg-lekki-gray rounded-md shadow-[0_48px_80px_-16px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col md:flex-row min-h-[600px] border border-white/5">
+                <div className="bg-surface rounded-md shadow-[0_48px_80px_-16px_rgba(0,0,0,0.15)] overflow-hidden flex flex-col md:flex-row min-h-[600px] border border-border">
                     
                     {/* Visual Segment */}
-                    <div className="w-full md:w-1/3 bg-lekki-black text-white p-12 flex flex-col justify-between relative overflow-hidden border-r border-white/5">
+                    <div className="w-full md:w-1/3 bg-background text-foreground p-12 flex flex-col justify-between relative overflow-hidden border-r border-border">
                         <div className="relative z-10">
                             <div className="flex items-center gap-4 mb-12">
                                 <Link href="/" className="flex items-center gap-3 group">
@@ -116,13 +116,13 @@ export default function AddressPage() {
                                     </div>
                                 </Link>
                             </div>
-                            <h2 className="text-5xl font-serif leading-tight mb-6">Logistics<br />Detail</h2>
-                            <p className="text-white/30 text-[10px] font-black leading-loose">Enter your coordinates for agba delivery tier.</p>
+                            <h2 className="text-5xl font-serif leading-tight mb-6 tracking-tighter">Logistics<br />Detail</h2>
+                            <p className="text-foreground/30 text-xs font-black leading-loose tracking-tight uppercase">Enter your coordinates for express delivery.</p>
                         </div>
                         
                         <div className="relative z-10 p-6 bg-lekki-lime/5 rounded-md border border-lekki-lime/10">
-                            <p className="text-[10px] font-black text-lekki-lime mb-2">Delivery Radius</p>
-                            <p className="text-xs font-bold text-white opacity-60">Lekki Phase I & Surrounding Areas</p>
+                            <p className="text-xs font-black text-lekki-lime mb-2 uppercase tracking-tight">Delivery Radius</p>
+                            <p className="text-sm font-bold text-foreground/60">Lekki Phase I & Surrounding Areas</p>
                         </div>
                         
                         {/* Background Detail */}
@@ -130,9 +130,9 @@ export default function AddressPage() {
                     </div>
 
                     {/* Form Segment */}
-                    <div className="w-full md:w-2/3 p-12 md:p-20 bg-lekki-gray">
+                    <div className="w-full md:w-2/3 p-12 md:p-20 bg-surface">
                         <div className="mb-14">
-                            <h3 className="text-2xl font-serif text-white mb-2">Delivery Information</h3>
+                            <h3 className="text-2xl font-serif text-foreground mb-2 tracking-tighter">Delivery Information</h3>
                             <div className="h-1 w-20 bg-lekki-lime rounded-full"></div>
                         </div>
 
@@ -145,55 +145,55 @@ export default function AddressPage() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                                 <div className="space-y-3 group">
-                                    <label className="text-[10px] font-black text-lekki-lime opacity-40 group-focus-within:opacity-100 transition-opacity uppercase tracking-widest">First Name</label>
-                                    <input name="firstName" value={form.firstName} onChange={handleChange} required type="text" className="w-full bg-transparent border-b-2 border-white/5 py-4 focus:outline-none focus:border-lekki-lime transition-colors text-white font-medium" placeholder="Agba" />
+                                    <label className="text-xs font-black text-lekki-lime opacity-40 group-focus-within:opacity-100 transition-opacity uppercase tracking-tight">First Name</label>
+                                    <input name="firstName" value={form.firstName} onChange={handleChange} required type="text" className="w-full bg-transparent border-b-2 border-border py-4 focus:outline-none focus:border-lekki-lime transition-colors text-foreground font-medium" placeholder="Efe" />
                                 </div>
                                 <div className="space-y-3 group">
-                                    <label className="text-[10px] font-black text-lekki-lime opacity-40 group-focus-within:opacity-100 transition-opacity uppercase tracking-widest">Last Name</label>
-                                    <input name="lastName" value={form.lastName} onChange={handleChange} required type="text" className="w-full bg-transparent border-b-2 border-white/5 py-4 focus:outline-none focus:border-lekki-lime transition-colors text-white font-medium" placeholder="User" />
+                                    <label className="text-xs font-black text-lekki-lime opacity-40 group-focus-within:opacity-100 transition-opacity uppercase tracking-tight">Last Name</label>
+                                    <input name="lastName" value={form.lastName} onChange={handleChange} required type="text" className="w-full bg-transparent border-b-2 border-border py-4 focus:outline-none focus:border-lekki-lime transition-colors text-foreground font-medium" placeholder="Ikemba" />
                                 </div>
                             </div>
 
                             <div className="space-y-3 group">
-                                <label className="text-[10px] font-black text-lekki-lime opacity-40 group-focus-within:opacity-100 transition-opacity uppercase tracking-widest">Street Address</label>
-                                <input name="address" value={form.address} onChange={handleChange} required type="text" className="w-full bg-transparent border-b-2 border-white/5 py-4 focus:outline-none focus:border-lekki-lime transition-colors text-white font-medium" placeholder="11b Shafi Sule St" />
+                                <label className="text-xs font-black text-lekki-lime opacity-40 group-focus-within:opacity-100 transition-opacity uppercase tracking-tight">Street Address</label>
+                                <input name="address" value={form.address} onChange={handleChange} required type="text" className="w-full bg-transparent border-b-2 border-border py-4 focus:outline-none focus:border-lekki-lime transition-colors text-foreground font-medium" placeholder="11b Shafi Sule St" />
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
                                 <div className="space-y-3 group md:col-span-2">
-                                    <label className="text-[10px] font-black text-lekki-lime opacity-40 group-focus-within:opacity-100 transition-opacity uppercase tracking-widest">City / Area</label>
-                                    <input name="city" value={form.city} onChange={handleChange} required type="text" className="w-full bg-transparent border-b-2 border-white/5 py-4 focus:outline-none focus:border-lekki-lime transition-colors text-white font-medium" placeholder="Lekki Phase I" />
+                                    <label className="text-xs font-black text-lekki-lime opacity-40 group-focus-within:opacity-100 transition-opacity uppercase tracking-tight">City / Area</label>
+                                    <input name="city" value={form.city} onChange={handleChange} required type="text" className="w-full bg-transparent border-b-2 border-border py-4 focus:outline-none focus:border-lekki-lime transition-colors text-foreground font-medium" placeholder="Lekki Phase I" />
                                 </div>
                                 <div className="space-y-3 group">
-                                    <label className="text-[10px] font-black text-lekki-lime opacity-40 group-focus-within:opacity-100 transition-opacity uppercase tracking-widest">Postal Code</label>
-                                    <input name="postalCode" value={form.postalCode} onChange={handleChange} required type="text" className="w-full bg-transparent border-b-2 border-white/5 py-4 focus:outline-none focus:border-lekki-lime transition-colors text-white font-medium" placeholder="106104" />
+                                    <label className="text-xs font-black text-lekki-lime opacity-40 group-focus-within:opacity-100 transition-opacity uppercase tracking-tight">Postal Code</label>
+                                    <input name="postalCode" value={form.postalCode} onChange={handleChange} required type="text" className="w-full bg-transparent border-b-2 border-border py-4 focus:outline-none focus:border-lekki-lime transition-colors text-foreground font-medium" placeholder="106104" />
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                                 <div className="space-y-3 group">
-                                    <label className="text-[10px] font-black text-lekki-lime opacity-40 group-focus-within:opacity-100 transition-opacity uppercase tracking-widest">Phone Number</label>
-                                    <div className="flex items-center border-b-2 border-white/5 focus-within:border-lekki-lime transition-colors">
-                                        <span className="text-white/30 font-bold text-sm py-4 pr-3 select-none">+234</span>
+                                    <label className="text-xs font-black text-lekki-lime opacity-40 group-focus-within:opacity-100 transition-opacity uppercase tracking-tight">Phone Number</label>
+                                    <div className="flex items-center border-b-2 border-border focus-within:border-lekki-lime transition-colors">
+                                        <span className="text-foreground/30 font-bold text-sm py-4 pr-3 select-none">+234</span>
                                         <input
                                             name="phone"
                                             value={form.phone}
                                             onChange={handleChange}
                                             required
                                             type="tel"
-                                            className="flex-1 bg-transparent py-4 focus:outline-none text-white font-medium"
+                                            className="flex-1 bg-transparent py-4 focus:outline-none text-foreground font-medium"
                                             placeholder="0701 242 8801"
                                         />
                                     </div>
                                 </div>
                                 <div className="space-y-3 group">
-                                    <label className="text-[10px] font-black text-lekki-lime opacity-40 group-focus-within:opacity-100 transition-opacity uppercase tracking-widest">Email Address <span className="text-white/20 font-bold normal-case opacity-50">(optional)</span></label>
+                                    <label className="text-xs font-black text-lekki-lime opacity-40 group-focus-within:opacity-100 transition-opacity uppercase tracking-tight">Email Address <span className="text-foreground/20 font-bold normal-case opacity-50">(optional)</span></label>
                                     <input
                                         name="email"
                                         value={form.email}
                                         onChange={handleChange}
                                         type="email"
-                                        className="w-full bg-transparent border-b-2 border-white/5 py-4 focus:outline-none focus:border-lekki-lime transition-colors text-white font-medium"
+                                        className="w-full bg-transparent border-b-2 border-border py-4 focus:outline-none focus:border-lekki-lime transition-colors text-foreground font-medium"
                                         placeholder="you@example.com"
                                     />
                                 </div>
@@ -203,22 +203,22 @@ export default function AddressPage() {
                                 <button 
                                     type="submit"
                                     disabled={isCalculating}
-                                    className="flex-grow py-6 bg-lekki-lime text-lekki-black font-black rounded-md shadow-2xl hover:bg-white transition-all text-center active:scale-[0.98] disabled:opacity-20 flex items-center justify-center gap-3"
+                                    className="flex-grow py-6 bg-lekki-lime text-lekki-black font-black rounded-md shadow-2xl hover:bg-foreground hover:text-background transition-all text-center active:scale-[0.98] disabled:opacity-20 flex items-center justify-center gap-3 tracking-tight"
                                 >
                                     {isCalculating ? (
                                         <>
                                             <div className="w-5 h-5 border-2 border-lekki-black/20 border-t-lekki-black rounded-full animate-spin"></div>
-                                            Calculating Logistics...
+                                            Calculating...
                                         </>
                                     ) : (
-                                        'Proceed to payment'
+                                        'PROCEED'
                                     )}
                                 </button>
                                 <Link 
                                     href="/"
-                                    className="px-10 py-6 border-2 border-white/5 text-white/40 font-black rounded-md hover:border-white/20 transition-all text-center active:scale-[0.98]"
+                                    className="px-10 py-6 border-2 border-border text-foreground/40 font-black rounded-md hover:border-foreground/20 transition-all text-center active:scale-[0.98] tracking-tight"
                                 >
-                                    Cancel
+                                    CANCEL
                                 </Link>
                             </div>
                         </form>
