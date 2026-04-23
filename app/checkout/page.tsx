@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useCart } from '@/components/CartContext';
+import Script from 'next/script';
 
 export default function CheckoutPage() {
     const router = useRouter();
@@ -24,7 +25,7 @@ export default function CheckoutPage() {
     }, [deliveryInfo.feeId, items.length, router]);
 
     const subtotal = items.reduce((acc, item) => {
-        const price = parseFloat(item.price.replace(/[₦,]/g, ''));
+        const price = parseFloat(item.price.replace(/[^0-9.]/g, ''));
         return acc + (isNaN(price) ? 0 : price * item.quantity);
     }, 0);
 
@@ -32,38 +33,80 @@ export default function CheckoutPage() {
     const grandTotal = subtotal + logisticsFee;
 
     const handlePayment = async () => {
+        const publicKey = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY;
+
+        if (!publicKey) {
+            setError('Payment gateway configuration missing: NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY is not defined.');
+            return;
+        }
+
+        if (!deliveryInfo.email || !deliveryInfo.email.includes('@')) {
+            setError('Please provide a valid email address in the logistics section.');
+            return;
+        }
+
         setIsProcessing(true);
         setError(null);
 
         try {
-            const res = await fetch('/api/delivery/create', {
+            // 1. Initialize payment on the server
+            const initRes = await fetch('/api/payment/initialize', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    fee_id: deliveryInfo.feeId,
-                    customer_name: `${deliveryInfo.firstName} ${deliveryInfo.lastName}`,
-                    customer_phone: deliveryInfo.phone,
-                    customer_email: deliveryInfo.email,
-                    estimated_order_amount: subtotal,
-                    delivery_note: `Delivery to ${deliveryInfo.address}, ${deliveryInfo.city}`,
+                    email: deliveryInfo.email.trim(),
+                    amount: grandTotal,
+                    metadata: {
+                        delivery_info: {
+                            fee_id: deliveryInfo.feeId,
+                            customer_name: `${deliveryInfo.firstName} ${deliveryInfo.lastName}`,
+                            customer_phone: deliveryInfo.phone,
+                            customer_email: deliveryInfo.email.trim(),
+                            estimated_order_amount: subtotal,
+                            delivery_note: `Delivery to ${deliveryInfo.address}, ${deliveryInfo.city}`,
+                            items: items.map(i => ({ title: i.title, quantity: i.quantity, price: i.price }))
+                        }
+                    }
                 }),
             });
 
-            if (!res.ok) {
-                const errData = await res.json();
-                throw new Error(errData.error || 'Failed to create delivery');
+            if (!initRes.ok) {
+                const errData = await initRes.json();
+                throw new Error(errData.error || 'Failed to initialize payment');
             }
 
-            const data = await res.json();
-            
-            // Success
-            setOrderReference(data.reference);
-            setIsSuccess(true);
-            clearCart();
+            const { access_code, reference } = await initRes.json();
+
+            // 2. Open Paystack Checkout (V2)
+            const PaystackPop = (window as any).PaystackPop;
+            if (!PaystackPop) {
+                throw new Error('Payment gateway not loaded. Please try again.');
+            }
+
+            const paystack = new PaystackPop();
+            paystack.newTransaction({
+                key: publicKey.trim(),
+                email: deliveryInfo.email.trim(),
+                amount: Math.round(grandTotal * 100),
+                access_code: access_code,
+                onSuccess: (transaction: any) => {
+                    setOrderReference(transaction.reference || reference);
+                    setIsSuccess(true);
+                    clearCart();
+                },
+                onCancel: () => {
+                    setIsProcessing(false);
+                },
+                onError: (error: any) => {
+                    console.error('Paystack V2 Error:', error);
+                    setError('Payment gateway error. Please try again.');
+                    setIsProcessing(false);
+                }
+            });
+
         } catch (err: any) {
-            console.error('Order creation error:', err);
+            console.error('Payment Error:', err);
             setError(err.message || 'Something went wrong processing your order.');
-        } finally {
             setIsProcessing(false);
         }
     };
@@ -79,9 +122,9 @@ export default function CheckoutPage() {
                             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                         </svg>
                     </div>
-                    <h2 className="text-4xl font-serif text-foreground mb-4 tracking-tighter">Order Locked!</h2>
+                    <h2 className="text-4xl font-serif text-foreground mb-4 tracking-tighter">Order Successful!</h2>
                     <p className="text-foreground/40 mb-6 font-medium tracking-tight">Your daily needs are being packed by the Lekki Mart team.</p>
-                    
+
                     <div className="bg-background p-4 rounded-xl mb-10 border border-border">
                         <p className="text-[10px] font-black text-lekki-lime uppercase tracking-tight mb-1">Delivery Reference</p>
                         <p className="text-foreground font-mono text-sm tracking-tight">{orderReference}</p>
@@ -103,9 +146,11 @@ export default function CheckoutPage() {
                 <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] rounded-full bg-lekki-lime animate-float" style={{ animationDelay: '2s' }}></div>
             </div>
 
+            <Script src="https://js.paystack.co/v2/inline.js" strategy="afterInteractive" />
+
             <div className="container mx-auto relative z-10 max-w-6xl">
                 <div className="bg-surface rounded-[3rem] shadow-[0_48px_80px_-16px_rgba(0,0,0,0.15)] overflow-hidden flex flex-col md:flex-row min-h-[700px] border border-border">
-                    
+
                     {/* Payment Side */}
                     <div className="w-full md:w-[60%] p-8 md:p-16 order-2 md:order-1">
                         <div className="mb-14">
@@ -116,6 +161,7 @@ export default function CheckoutPage() {
                                             src="/o8x5ZQT9LFCkNbmR8zcin.png"
                                             alt="Lekki Mart"
                                             fill
+                                            sizes="40px"
                                             className="object-contain"
                                         />
                                     </div>
@@ -124,7 +170,7 @@ export default function CheckoutPage() {
                                     </div>
                                 </Link>
                             </div>
-                            <h2 className="text-5xl font-serif text-foreground mb-4 tracking-tighter">Secure Checkout</h2>
+                            <h2 className="text-5xl font-serif text-foreground mb-4 tracking-tighter">Complete Order</h2>
                         </div>
 
                         {error && (
@@ -134,48 +180,21 @@ export default function CheckoutPage() {
                         )}
 
                         <div className="space-y-12">
-                            <div className="grid grid-cols-2 gap-4">
-                                <button className="bg-lekki-lime text-lekki-black rounded-md p-6 flex flex-col items-center justify-center gap-2 shadow-2xl shadow-lekki-lime/10">
-                                    <span className="font-black text-xs uppercase tracking-tight">Credit Card</span>
-                                </button>
-                                <button className="border-2 border-border rounded-md p-6 flex flex-col items-center justify-center gap-2 hover:border-border transition-all text-foreground/30 cursor-not-allowed">
-                                    <span className="font-black text-xs uppercase tracking-tight">Bank Transfer</span>
-                                </button>
+                            <div className="p-8 bg-background border border-border rounded-2xl flex items-center gap-6 group hover:border-lekki-lime transition-all cursor-pointer select-none ring-1 ring-border hover:ring-lekki-lime/50">
+                                <div className="w-14 h-14 bg-lekki-lime/10 rounded-full flex items-center justify-center text-lekki-lime group-hover:scale-110 transition-transform">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="5" rx="2" /><line x1="2" x2="22" y1="10" y2="10" /></svg>
+                                </div>
+                                <div className="flex-1">
+                                    <h4 className="font-black text-sm uppercase tracking-tight mb-1">Paystack Gateway</h4>
+                                    <p className="text-foreground/40 text-xs font-medium">International & local payments enabled</p>
+                                </div>
+                                <div className="w-4 h-4 rounded-full border-2 border-lekki-lime bg-lekki-lime shadow-[0_0_15px_rgba(180,255,0,0.4)]"></div>
                             </div>
 
-                            <div className="grid gap-10">
-                                <div className="space-y-3 group">
-                                    <label className="text-xs font-black text-lekki-lime opacity-40 group-focus-within:opacity-100 transition-opacity uppercase tracking-tight">Card Number</label>
-                                    <input
-                                        type="text"
-                                        className="w-full bg-transparent border-b-2 border-border py-4 focus:outline-none focus:border-lekki-lime transition-colors text-xl text-foreground font-medium tracking-tight"
-                                        placeholder="4242 4242 4242 4242"
-                                    />
-                                </div>
-                                <div className="grid grid-cols-2 gap-12">
-                                    <div className="space-y-3 group">
-                                        <label className="text-xs font-black text-lekki-lime opacity-40 group-focus-within:opacity-100 transition-opacity uppercase tracking-tight">Expiry</label>
-                                        <input
-                                            type="text"
-                                            className="w-full bg-transparent border-b-2 border-border py-4 focus:outline-none focus:border-lekki-lime transition-colors text-foreground"
-                                            placeholder="MM/YY"
-                                        />
-                                    </div>
-                                    <div className="space-y-3 group">
-                                        <label className="text-xs font-black text-lekki-lime opacity-40 group-focus-within:opacity-100 transition-opacity uppercase tracking-tight">CVC</label>
-                                        <input
-                                            type="text"
-                                            className="w-full bg-transparent border-b-2 border-border py-4 focus:outline-none focus:border-lekki-lime transition-colors text-foreground"
-                                            placeholder="123"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button 
+                            <button
                                 onClick={handlePayment}
                                 disabled={isProcessing || items.length === 0}
-                                className="w-full py-7 bg-lekki-lime text-lekki-black font-black rounded-md shadow-2xl hover:bg-white active:scale-[0.98] transition-all disabled:opacity-20 flex items-center justify-center gap-5 mt-10"
+                                className="w-full py-7 bg-lekki-lime text-lekki-black font-black rounded-md shadow-2xl hover:bg-white active:scale-[0.98] transition-all disabled:opacity-20 flex items-center justify-center gap-5"
                             >
                                 {isProcessing ? (
                                     <>

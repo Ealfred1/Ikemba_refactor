@@ -45,8 +45,8 @@ export default function AddressPage() {
     const handleProceed = async (e: React.FormEvent) => {
         e.preventDefault();
         
-        if (!form.firstName || !form.phone || !form.address) {
-            setError('Please fill in required fields (Name, Phone, Address)');
+        if (!form.firstName || !form.phone || !form.address || !form.email) {
+            setError('Please fill in required fields (Name, Phone, Address, Email)');
             return;
         }
 
@@ -187,11 +187,12 @@ export default function AddressPage() {
                                     </div>
                                 </div>
                                 <div className="space-y-3 group">
-                                    <label className="text-xs font-black text-lekki-lime opacity-40 group-focus-within:opacity-100 transition-opacity uppercase tracking-tight">Email Address <span className="text-foreground/20 font-bold normal-case opacity-50">(optional)</span></label>
+                                    <label className="text-xs font-black text-lekki-lime opacity-40 group-focus-within:opacity-100 transition-opacity uppercase tracking-tight">Email Address <span className="text-foreground/20 font-bold normal-case opacity-50">(required for payment)</span></label>
                                     <input
                                         name="email"
                                         value={form.email}
                                         onChange={handleChange}
+                                        required
                                         type="email"
                                         className="w-full bg-transparent border-b-2 border-border py-4 focus:outline-none focus:border-lekki-lime transition-colors text-foreground font-medium"
                                         placeholder="you@example.com"

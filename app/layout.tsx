@@ -17,10 +17,15 @@ const fontBricolage = Bricolage_Grotesque({
     display: 'swap',
 });
 
+export const viewport = {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+};
+
 export const metadata: Metadata = {
     title: 'Lekki Mart | Premium Supermarket in Lekki Phase I',
     description: 'The premier destination for quality groceries in Lekki Phase I, Lagos. Beverages, snacks, and household essentials.',
-    viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
 };
 
 export default function RootLayout({

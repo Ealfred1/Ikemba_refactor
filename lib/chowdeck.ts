@@ -230,3 +230,76 @@ export async function getCategories(): Promise<{ name: string; count: number }[]
 
     return [...ordered, ...extras];
 }
+
+// ─── Delivery ────────────────────────────────────────────────────────────────
+
+export interface DeliveryRequest {
+    fee_id: string | number;
+    customer_name: string;
+    customer_phone: string;
+    customer_email?: string;
+    estimated_order_amount: number; // in naira
+    delivery_note?: string;
+    reference?: string;
+}
+
+/**
+ * Creates a delivery in Chowdeck.
+ */
+export async function createChowdeckDelivery(data: DeliveryRequest) {
+    const {
+        fee_id,
+        customer_name,
+        customer_phone,
+        customer_email,
+        estimated_order_amount = 0,
+        delivery_note,
+        reference,
+    } = data;
+
+    // Normalize Nigerian phone number — strip leading 0 and add country code
+    const phone = customer_phone.replace(/\D/g, '').replace(/^0/, '');
+
+    const payload = {
+        destination_contact: {
+            name: customer_name,
+            phone: phone,
+            email: customer_email || undefined,
+            country_code: 'NG',
+        },
+        source_contact: {
+            phone: process.env.STORE_PHONE || '08012345678',
+            email: process.env.STORE_EMAIL || 'orders@lekkimart.com',
+            country_code: 'NG',
+        },
+        fee_id: Number(fee_id),
+        item_type: 'food',
+        user_action: 'sending',
+        customer_delivery_note: delivery_note || 'Handle with care',
+        customer_vendor_note: 'Fresh groceries from Lekki Mart',
+        estimated_order_amount: Math.round(estimated_order_amount * 100), // kobo
+        reference: reference || `LKMT-${Date.now()}`,
+    };
+
+    const url = `${API_BASE}/merchant/${MERCHANT_REF}/delivery`;
+    const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+    };
+    if (API_TOKEN) headers['Authorization'] = `Bearer ${API_TOKEN}`;
+
+    const res = await fetch(url, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+        const err = await res.text();
+        console.error('[/lib/chowdeck] createChowdeckDelivery error:', err);
+        throw new Error(`Failed to create delivery: ${res.statusText}`);
+    }
+
+    const json = await res.json();
+    return json.data;
+}
