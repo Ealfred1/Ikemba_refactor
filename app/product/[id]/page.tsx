@@ -66,6 +66,27 @@ export default async function ProductPage({ params }: PageProps) {
         );
     }
 
+    const jsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        name: product.name,
+        image: product.image,
+        description: product.description,
+        sku: product.sku,
+        brand: {
+            '@type': 'Brand',
+            name: 'Lekki Mart',
+        },
+        offers: {
+            '@type': 'Offer',
+            url: `https://lekkimart.com/product/${product.id}`,
+            priceCurrency: 'NGN',
+            price: product.discountedPrice,
+            availability: product.inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+            itemCondition: 'https://schema.org/NewCondition',
+        },
+    };
+
     return (
         <main className="min-h-screen bg-background text-foreground">
             {/* Inject JSON-LD */}

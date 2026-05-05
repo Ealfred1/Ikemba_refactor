@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     } catch (error: unknown) {
         console.error('[/api/delivery/create] Failed:', error);
         return NextResponse.json(
-            { error: error.message || 'Internal server error' },
+            { error: error instanceof Error ? error.message : 'Internal server error' },
             { status: 500 }
         );
     }

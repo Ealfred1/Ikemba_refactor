@@ -34,7 +34,9 @@ export default function CheckoutPage() {
 
     useEffect(() => {
         const checkPaystack = setInterval(() => {
-            if (window.PaystackPop?.setup) {
+            const w = window as unknown as Record<string, unknown>;
+            const paystack = w.PaystackPop;
+            if (paystack && typeof (paystack as Record<string, unknown>).setup === 'function') {
                 setIsPaystackLoaded(true);
                 clearInterval(checkPaystack);
             }

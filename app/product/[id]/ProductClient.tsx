@@ -28,7 +28,7 @@ export default function ProductClient({ product }: { product: Product }) {
             addItem({
                 id: product.id,
                 title: product.name,
-                price: `₦${product.discountedPrice.toLocaleString()}`,
+                price: product.discountedPrice,
                 image: product.image,
             });
         }
