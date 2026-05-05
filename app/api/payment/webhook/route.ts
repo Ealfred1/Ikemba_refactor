@@ -53,106 +53,83 @@ export async function POST(request: Request) {
             return NextResponse.json({ received: true }, { status: 200 });
         }
 
-        const { reference, amount, customer, metadata } = event.data;
+        const { reference, amount } = event.data;
 
         if (!reference) {
             console.error('[Webhook] No reference in event data');
             return NextResponse.json({ error: 'Missing reference' }, { status: 400 });
         }
 
-        // ── Step 1: Verify payment with Paystack API ──
-        const verification = await verifyPaystackTransaction(reference);
-        if (!verification.valid) {
-            console.error(`[Webhook] Payment verification failed for ${reference}:`, verification.error);
-            return NextResponse.json({ error: 'Payment not verified' }, { status: 400 });
-        }
-
-        // ── Step 2: Idempotency check — has this reference been processed? ──
-        const { data: existingOrder } = await supabaseAdmin
+        // ── Step 1: Look up pending order (created at init time) ──
+        const { data: order } = await supabaseAdmin
             .from('orders')
-            .select('id, webhook_processed')
+            .select('*')
             .eq('reference', reference)
             .single();
 
-        if (existingOrder?.webhook_processed) {
-            console.log(`[Webhook] Order ${reference} already processed — skipping (idempotent)`);
+        if (!order) {
+            console.error(`[Webhook] No order found for reference: ${reference}`);
+            return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+        }
+
+        // ── Step 2: Idempotency — skip if already processed ──
+        if (order.webhook_processed) {
+            console.log(`[Webhook] Order ${reference} already processed — skipping`);
             return NextResponse.json({ received: true, skipped: true }, { status: 200 });
         }
 
-        // ── Step 3: Extract delivery details from metadata ──
-        const deliveryInfo = metadata?.delivery_info;
-        if (!deliveryInfo) {
-            console.warn(`[Webhook] No delivery_info in metadata for ref: ${reference}`);
-            return NextResponse.json({ error: 'Missing delivery_info' }, { status: 400 });
+        // ── Step 3: Verify payment with Paystack API ──
+        const verification = await verifyPaystackTransaction(reference);
+        if (!verification.valid) {
+            await supabaseAdmin
+                .from('orders')
+                .update({ status: 'failed', webhook_processed: true, webhook_verified: false })
+                .eq('id', order.id);
+            return NextResponse.json({ error: 'Payment not verified' }, { status: 400 });
         }
 
-        const totalAmountNaira = amount / 100;
-        const deliveryFeeNaira = totalAmountNaira - deliveryInfo.estimated_order_amount;
+        // ── Step 4: Extract delivery info from stored metadata ──
+        let deliveryInfo: Record<string, unknown> = {};
+        try {
+            deliveryInfo = order.metadata_json ? JSON.parse(order.metadata_json) : {};
+        } catch {
+            // Fallback: extract from webhook event data if available
+            const webhookMeta = event.data?.metadata;
+            if (webhookMeta?.delivery_info) {
+                deliveryInfo = webhookMeta.delivery_info as Record<string, unknown>;
+            }
+        }
 
-        // Extract user_id from metadata (passed from checkout if user is logged in)
-        const userId = metadata?.user_id || null;
-
-        // ── Step 4: Persist order to Supabase ──
-        const { data: order, error: orderError } = await supabaseAdmin
+        // ── Step 5: Update order to payment_confirmed ──
+        const { error: updateError } = await supabaseAdmin
             .from('orders')
-            .insert({
-                reference,
+            .update({
                 status: 'payment_confirmed',
-                amount_kobo: amount,
-                amount_naira: totalAmountNaira,
-                payment_method: 'paystack',
                 paid_at: new Date().toISOString(),
-                customer_name: deliveryInfo.customer_name,
-                customer_email: deliveryInfo.customer_email || customer?.email || '',
-                customer_phone: deliveryInfo.customer_phone,
-                delivery_address: deliveryInfo.delivery_note || '',
-                delivery_city: 'Lagos',
-                delivery_fee_naira: Math.max(0, deliveryFeeNaira),
-                chowdeck_fee_id: deliveryInfo.fee_id,
                 webhook_processed: true,
                 webhook_verified: true,
-                user_id: userId,
+                amount_kobo: amount,
+                amount_naira: amount / 100,
             })
-            .select()
-            .single();
+            .eq('id', order.id);
 
-        if (orderError || !order) {
-            console.error(`[Webhook] Failed to persist order ${reference}:`, orderError);
-            return NextResponse.json({ error: 'Failed to create order record' }, { status: 500 });
-        }
-
-        // ── Step 5: Insert order items ──
-        const items = deliveryInfo.items || [];
-        if (items.length > 0) {
-            const orderItems = items.map((item: { title: string; quantity: number; price: number | string }) => ({
-                order_id: order.id,
-                product_name: item.title,
-                quantity: item.quantity,
-                price_naira: typeof item.price === 'number' ? item.price : parseFloat(String(item.price)) || 0,
-            }));
-
-            const { error: itemsError } = await supabaseAdmin
-                .from('order_items')
-                .insert(orderItems);
-
-            if (itemsError) {
-                console.error(`[Webhook] Failed to insert order items for ${reference}:`, itemsError);
-            }
+        if (updateError) {
+            console.error(`[Webhook] Failed to update order ${reference}:`, updateError);
+            return NextResponse.json({ error: 'Failed to update order' }, { status: 500 });
         }
 
         // ── Step 6: Create Chowdeck delivery ──
         try {
             const deliveryResult = await createChowdeckDelivery({
-                fee_id: deliveryInfo.fee_id,
-                customer_name: deliveryInfo.customer_name,
-                customer_phone: deliveryInfo.customer_phone,
-                customer_email: deliveryInfo.customer_email,
-                estimated_order_amount: deliveryInfo.estimated_order_amount,
-                delivery_note: deliveryInfo.delivery_note,
-                reference: reference,
+                fee_id: String(deliveryInfo.fee_id || order.chowdeck_fee_id),
+                customer_name: order.customer_name,
+                customer_phone: order.customer_phone,
+                customer_email: order.customer_email,
+                estimated_order_amount: Number(deliveryInfo.estimated_order_amount) || order.amount_naira,
+                delivery_note: order.delivery_address,
+                reference,
             });
 
-            // Update order with Chowdeck delivery reference
             if (deliveryResult?.id) {
                 await supabaseAdmin
                     .from('orders')
@@ -164,21 +141,18 @@ export async function POST(request: Request) {
             }
         } catch (err) {
             console.error(`[Webhook] Chowdeck delivery failed for ${reference}:`, err);
-            await supabaseAdmin
-                .from('orders')
-                .update({ status: 'payment_confirmed' })
-                .eq('id', order.id);
         }
 
         // ── Step 7: Send confirmation email ──
         try {
+            const items = deliveryInfo.items || [];
             await sendOrderConfirmationEmail({
-                email: deliveryInfo.customer_email,
-                customerName: deliveryInfo.customer_name,
+                email: order.customer_email,
+                customerName: order.customer_name,
                 orderReference: reference,
-                deliveryAddress: deliveryInfo.delivery_note || '',
-                items: items,
-                totalAmount: totalAmountNaira,
+                deliveryAddress: order.delivery_address,
+                items: items as Array<{ title: string; quantity: number; price: number | string }>,
+                totalAmount: amount / 100,
             });
         } catch (err) {
             console.error(`[Webhook] Email failed for ${reference}:`, err);
