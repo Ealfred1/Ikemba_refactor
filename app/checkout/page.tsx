@@ -26,6 +26,7 @@ export default function CheckoutPage() {
     const [orderReference, setOrderReference] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [isPaystackLoaded, setIsPaystackLoaded] = useState(false);
+    const [isCreatingOrder, setIsCreatingOrder] = useState(false);
 
     const [user, setUser] = useState<User | null>(null);
     const [isAuthLoading, setIsAuthLoading] = useState(true);
@@ -94,7 +95,7 @@ export default function CheckoutPage() {
                     .select('*')
                     .eq('user_id', user.id)
                     .eq('is_default', true)
-                    .single();
+                    .maybeSingle();
 
                 if (defaultAddress && !deliveryInfo.address) {
                     updateDeliveryInfo({
@@ -179,10 +180,33 @@ export default function CheckoutPage() {
                 email: deliveryInfo.email.trim(),
                 amount: Math.round(grandTotal * 100),
                 access_code: access_code,
-                callback: (response: { reference: string }) => {
-                    setOrderReference(response.reference || reference);
-                    setIsSuccess(true);
-                    clearCart();
+                callback: async (response: { reference: string }) => {
+                    const ref = response.reference || reference;
+                    setOrderReference(ref);
+                    setIsCreatingOrder(true);
+
+                    try {
+                        const res = await fetch('/api/orders', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ reference: ref }),
+                        });
+
+                        const data = await res.json();
+
+                        if (!res.ok) {
+                            throw new Error(data.error || 'Failed to confirm order');
+                        }
+
+                        clearCart();
+                        setIsSuccess(true);
+                    } catch (err) {
+                        const message = err instanceof Error ? err.message : 'Payment succeeded but order confirmation failed. Contact support with reference: ' + ref;
+                        setError(message);
+                        setIsProcessing(false);
+                    } finally {
+                        setIsCreatingOrder(false);
+                    }
                 },
                 onClose: () => {
                     setIsProcessing(false);
@@ -300,10 +324,10 @@ export default function CheckoutPage() {
                                 disabled={isProcessing || items.length === 0 || !isPaystackLoaded}
                                 className="w-full py-7 bg-lekki-lime text-lekki-black font-black rounded-md shadow-2xl hover:bg-white active:scale-[0.98] transition-all disabled:opacity-20 flex items-center justify-center gap-5"
                             >
-                                {isProcessing ? (
+                                {isProcessing || isCreatingOrder ? (
                                     <>
                                         <div className="w-6 h-6 border-4 border-lekki-black/20 border-t-lekki-black rounded-full animate-spin"></div>
-                                        PROCESSING...
+                                        {isCreatingOrder ? 'CONFIRMING ORDER...' : 'PROCESSING...'}
                                     </>
                                 ) : !isPaystackLoaded ? (
                                     <>
