@@ -89,6 +89,9 @@ export async function POST(request: Request) {
         const totalAmountNaira = amount / 100;
         const deliveryFeeNaira = totalAmountNaira - deliveryInfo.estimated_order_amount;
 
+        // Extract user_id from metadata (passed from checkout if user is logged in)
+        const userId = metadata?.user_id || null;
+
         // ── Step 4: Persist order to Supabase ──
         const { data: order, error: orderError } = await supabaseAdmin
             .from('orders')
@@ -108,6 +111,7 @@ export async function POST(request: Request) {
                 chowdeck_fee_id: deliveryInfo.fee_id,
                 webhook_processed: true,
                 webhook_verified: true,
+                user_id: userId,
             })
             .select()
             .single();

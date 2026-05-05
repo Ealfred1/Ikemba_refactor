@@ -6,6 +6,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useCart } from '@/components/CartContext';
 import Script from 'next/script';
+import { createBrowserSupabaseClient } from '@/lib/supabase-browser';
+import type { User } from '@supabase/supabase-js';
 
 declare global {
     interface Window {
@@ -17,13 +19,18 @@ declare global {
 
 export default function CheckoutPage() {
     const router = useRouter();
-    const { items, clearCart, deliveryInfo } = useCart();
+    const { items, clearCart, deliveryInfo, updateDeliveryInfo } = useCart();
     const [isProcessing, setIsProcessing] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
     const [orderReference, setOrderReference] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [isPaystackLoaded, setIsPaystackLoaded] = useState(false);
+
+    const [user, setUser] = useState<User | null>(null);
+    const [isAuthLoading, setIsAuthLoading] = useState(true);
+
+    const supabase = createBrowserSupabaseClient();
 
     useEffect(() => {
         setIsMounted(true);
@@ -50,6 +57,55 @@ export default function CheckoutPage() {
             clearInterval(checkPaystack);
             clearTimeout(timeout);
         };
+    }, []);
+
+    useEffect(() => {
+        const loadUser = async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            setUser(user);
+            setIsAuthLoading(false);
+
+            if (user) {
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('full_name, phone')
+                    .eq('id', user.id)
+                    .single();
+
+                if (profile) {
+                    const nameParts = (profile.full_name || '').split(' ');
+                    const firstName = nameParts[0] || '';
+                    const lastName = nameParts.slice(1).join(' ') || '';
+
+                    const updates: Record<string, string> = {
+                        email: user.email || deliveryInfo.email,
+                    };
+                    if (firstName && !deliveryInfo.firstName) updates.firstName = firstName;
+                    if (lastName && !deliveryInfo.lastName) updates.lastName = lastName;
+                    if (profile.phone && !deliveryInfo.phone) updates.phone = profile.phone;
+
+                    if (Object.keys(updates).length > 0) {
+                        updateDeliveryInfo(updates);
+                    }
+                }
+
+                const { data: defaultAddress } = await supabase
+                    .from('saved_addresses')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .eq('is_default', true)
+                    .single();
+
+                if (defaultAddress && !deliveryInfo.address) {
+                    updateDeliveryInfo({
+                        address: defaultAddress.street_address,
+                        city: defaultAddress.city || 'Lagos',
+                    });
+                }
+            }
+        };
+
+        loadUser();
     }, []);
 
     const subtotal = items.reduce((acc, item) => {
@@ -80,6 +136,22 @@ export default function CheckoutPage() {
         setIsProcessing(true);
         setError(null);
 
+        const paymentMetadata: Record<string, unknown> = {
+            delivery_info: {
+                fee_id: deliveryInfo.feeId,
+                customer_name: `${deliveryInfo.firstName} ${deliveryInfo.lastName}`,
+                customer_phone: deliveryInfo.phone,
+                customer_email: deliveryInfo.email.trim(),
+                estimated_order_amount: subtotal,
+                delivery_note: `Delivery to ${deliveryInfo.address}, ${deliveryInfo.city}`,
+                items: items.map(i => ({ title: i.title, quantity: i.quantity, price: i.price }))
+            }
+        };
+
+        if (user) {
+            paymentMetadata.user_id = user.id;
+        }
+
         try {
             const initRes = await fetch('/api/payment/initialize', {
                 method: 'POST',
@@ -87,17 +159,7 @@ export default function CheckoutPage() {
                 body: JSON.stringify({
                     email: deliveryInfo.email.trim(),
                     amount: grandTotal,
-                    metadata: {
-                        delivery_info: {
-                            fee_id: deliveryInfo.feeId,
-                            customer_name: `${deliveryInfo.firstName} ${deliveryInfo.lastName}`,
-                            customer_phone: deliveryInfo.phone,
-                            customer_email: deliveryInfo.email.trim(),
-                            estimated_order_amount: subtotal,
-                            delivery_note: `Delivery to ${deliveryInfo.address}, ${deliveryInfo.city}`,
-                            items: items.map(i => ({ title: i.title, quantity: i.quantity, price: i.price }))
-                        }
-                    }
+                    metadata: paymentMetadata
                 }),
             });
 
@@ -135,7 +197,13 @@ export default function CheckoutPage() {
         }
     };
 
-    if (!isMounted) return null;
+    if (!isMounted || isAuthLoading) {
+        return (
+            <main className="min-h-screen bg-background flex items-center justify-center">
+                <div className="w-10 h-10 border-4 border-lekki-lime/20 border-t-lekki-lime rounded-full animate-spin"></div>
+            </main>
+        );
+    }
 
     if (isSuccess) {
         return (
@@ -197,6 +265,16 @@ export default function CheckoutPage() {
                                 </Link>
                             </div>
                             <h2 className="text-5xl font-serif text-foreground mb-4 tracking-tighter">Complete Order</h2>
+
+                            {user && (
+                                <div className="mt-4 p-4 bg-lekki-lime/5 border border-lekki-lime/20 rounded-md">
+                                    <p className="text-[10px] font-black text-lekki-lime uppercase tracking-tight mb-1">Signed in as</p>
+                                    <p className="text-xs font-bold text-foreground/60">{user.email}</p>
+                                    <Link href="/settings" className="text-[10px] font-black text-lekki-lime/60 hover:text-lekki-lime transition-colors mt-1 block">
+                                        Update your details →
+                                    </Link>
+                                </div>
+                            )}
                         </div>
 
                         {error && (
