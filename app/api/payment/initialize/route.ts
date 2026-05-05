@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 
-const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
+const PAYSTACK_SECRET_KEY = (process.env.PAYSTACK_SECRET_KEY || '').replace(/[\s\p{C}]+/gu, '').trim();
 
 export async function POST(request: Request) {
-    if (!PAYSTACK_SECRET_KEY) {
+    if (!PAYSTACK_SECRET_KEY || (!PAYSTACK_SECRET_KEY.startsWith('sk_test_') && !PAYSTACK_SECRET_KEY.startsWith('sk_live_'))) {
+        console.error('[Paystack] Invalid or missing secret key:', process.env.PAYSTACK_SECRET_KEY?.slice(0, 8) + '...');
         return NextResponse.json({ error: 'Paystack secret key not configured' }, { status: 500 });
     }
 
@@ -23,8 +24,8 @@ export async function POST(request: Request) {
 
         const amountInKobo = Math.round(amount * 100);
 
-        // ── Step 1: Create pending order BEFORE calling Paystack ──
-        const { data: paystackInit } = await fetch('https://api.paystack.co/transaction/initialize', {
+        // ── Step 1: Initialize transaction with Paystack ──
+        const paystackRes = await fetch('https://api.paystack.co/transaction/initialize', {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
@@ -35,14 +36,19 @@ export async function POST(request: Request) {
                 amount: amountInKobo,
                 metadata,
             }),
-        }).then(res => res.json());
+        });
 
-        if (!paystackInit || paystackInit.status !== true) {
-            console.error('Paystack API error:', paystackInit);
-            return NextResponse.json({ error: paystackInit?.message || 'Paystack initialization failed' }, { status: 400 });
+        const paystackJson = await paystackRes.json();
+
+        if (!paystackJson.status) {
+            console.error('[Paystack Init] Error:', JSON.stringify(paystackJson, null, 2));
+            return NextResponse.json({
+                error: paystackJson.message || `Paystack error ${paystackRes.status}`,
+                detail: paystackJson,
+            }, { status: 400 });
         }
 
-        const { access_code, reference } = paystackInit.data;
+        const { access_code, reference } = paystackJson.data;
 
         const userId = metadata?.user_id || null;
         const deliveryFeeNaira = amount - deliveryInfo.estimated_order_amount;
