@@ -116,10 +116,14 @@ export default function CheckoutPage() {
     const grandTotal = subtotal + logisticsFee;
 
     const handlePayment = async () => {
-        const publicKey = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY;
+        const rawKey = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || '';
 
-        if (!publicKey) {
-            setError('Payment gateway configuration missing.');
+        // Strip all invisible/whitespace chars that can corrupt the key
+        const publicKey = rawKey.replace(/[\s\p{C}]+/gu, '').trim();
+
+        if (!publicKey.startsWith('pk_test_') && !publicKey.startsWith('pk_live_')) {
+            console.error('[Paystack] Invalid key format:', publicKey.slice(0, 8) + '...');
+            setError('Payment gateway key is misconfigured. Check NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY.');
             return;
         }
 
@@ -175,9 +179,10 @@ export default function CheckoutPage() {
             }
 
             window.PaystackPop.setup({
-                key: publicKey.trim(),
+                key: publicKey,
                 email: deliveryInfo.email.trim(),
                 amount: Math.round(grandTotal * 100),
+                currency: 'NGN',
                 access_code: access_code,
                 callback: function(response: { reference: string }) {
                     const ref = response.reference || reference;
