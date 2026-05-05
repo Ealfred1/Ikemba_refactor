@@ -19,7 +19,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         addItem({
             id: product.id,
             title: product.name,
-            price: `₦${product.discountedPrice.toLocaleString()}`,
+            price: product.discountedPrice,
             image: product.image
         });
     };

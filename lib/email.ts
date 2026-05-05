@@ -7,7 +7,7 @@ interface OrderConfirmationParams {
     customerName: string;
     orderReference: string;
     deliveryAddress: string;
-    items: { title: string; quantity: number; price: string }[];
+    items: { title: string; quantity: number; price: number | string }[];
     totalAmount: number;
 }
 
@@ -51,12 +51,16 @@ export async function sendOrderConfirmationEmail({
                     <div style="margin-bottom: 30px;">
                         <p style="color: #b4ff00; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 15px;">Order Details</p>
                         <ul style="list-style: none; padding: 0; margin: 0;">
-                            ${items.map(item => `
+                            ${items.map(item => {
+                                const displayPrice = typeof item.price === 'number'
+                                    ? `₦${item.price.toLocaleString()}`
+                                    : item.price;
+                                return `
                                 <li style="border-bottom: 1px solid #222; padding: 15px 0; display: flex; justify-content: space-between;">
                                     <span style="color: #fff; font-weight: 600;">${item.title} (x${item.quantity})</span>
-                                    <span style="color: #b4ff00; font-weight: 800;">${item.price}</span>
+                                    <span style="color: #b4ff00; font-weight: 800;">${displayPrice}</span>
                                 </li>
-                            `).join('')}
+                            `}).join('')}
                         </ul>
                         <div style="margin-top: 20px; text-align: right;">
                             <span style="color: #666; text-transform: uppercase; font-size: 11px; font-weight: 800; margin-right: 15px;">Grand Total</span>

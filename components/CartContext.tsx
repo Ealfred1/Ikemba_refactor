@@ -2,10 +2,10 @@
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
-interface CartItem {
+export interface CartItem {
     id: number;
     title: string;
-    price: string;
+    price: number;
     image: string;
     quantity: number;
 }
@@ -60,47 +60,58 @@ const INITIAL_DELIVERY: DeliveryInfo = {
     deliveryFee: 0,
 };
 
+function sanitizeCartItem(item: unknown): CartItem | null {
+    if (!item || typeof item !== 'object') return null;
+    const raw = item as Record<string, unknown>;
+    if (!raw.id || !raw.title || raw.price == null || !raw.image) return null;
+
+    const price = typeof raw.price === 'string'
+        ? parseFloat(raw.price.replace(/[^0-9.]/g, ''))
+        : Number(raw.price);
+
+    return {
+        id: Number(raw.id),
+        title: String(raw.title),
+        price: isNaN(price) ? 0 : price,
+        image: String(raw.image),
+        quantity: Number(raw.quantity) || 1,
+    };
+}
+
+function loadStoredItems(): CartItem[] {
+    if (typeof window === 'undefined') return [];
+    try {
+        const stored = localStorage.getItem('lekki-mart-cart');
+        if (!stored) return [];
+        const parsed = JSON.parse(stored) as unknown[];
+        return parsed.map(sanitizeCartItem).filter(Boolean) as CartItem[];
+    } catch {
+        return [];
+    }
+}
+
+function loadStoredDelivery(): DeliveryInfo {
+    if (typeof window === 'undefined') return INITIAL_DELIVERY;
+    try {
+        const stored = localStorage.getItem('lekki-mart-delivery');
+        return stored ? JSON.parse(stored) : INITIAL_DELIVERY;
+    } catch {
+        return INITIAL_DELIVERY;
+    }
+}
+
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
-    const [items, setItems] = useState<CartItem[]>([]);
+    const [items, setItems] = useState<CartItem[]>(loadStoredItems);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    const [deliveryInfo, setDeliveryInfo] = useState<DeliveryInfo>(INITIAL_DELIVERY);
-    const [isInitialized, setIsInitialized] = useState(false);
+    const [deliveryInfo, setDeliveryInfo] = useState<DeliveryInfo>(loadStoredDelivery);
 
-    // Initial load from localStorage
     useEffect(() => {
-        const storedItems = localStorage.getItem('lekki-mart-cart');
-        const storedInfo = localStorage.getItem('lekki-mart-delivery');
-
-        if (storedItems) {
-            try {
-                setItems(JSON.parse(storedItems));
-            } catch (e) {
-                console.error('Error parsing cart items', e);
-            }
-        }
-
-        if (storedInfo) {
-            try {
-                setDeliveryInfo(JSON.parse(storedInfo));
-            } catch (e) {
-                console.error('Error parsing delivery info', e);
-            }
-        }
-        
-        setIsInitialized(true);
-    }, []);
-
-    // Persist to localStorage whenever state changes
-    useEffect(() => {
-        if (!isInitialized) return;
-        
         localStorage.setItem('lekki-mart-cart', JSON.stringify(items));
         localStorage.setItem('lekki-mart-delivery', JSON.stringify(deliveryInfo));
 
-        // Sync a small cookie for server-side visibility if needed
         const count = items.reduce((acc, item) => acc + item.quantity, 0);
         document.cookie = `cart_count=${count}; path=/; max-age=31536000; SameSite=Strict`;
-    }, [items, deliveryInfo, isInitialized]);
+    }, [items, deliveryInfo]);
 
     const openDrawer = () => setIsDrawerOpen(true);
     const closeDrawer = () => setIsDrawerOpen(false);

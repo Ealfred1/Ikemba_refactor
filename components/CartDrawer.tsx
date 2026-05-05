@@ -1,16 +1,14 @@
 'use client';
 
 import React from 'react';
-import { useCart } from './CartContext';
-import Image from 'next/image';
+import { useCart, CartItem } from './CartContext';
 import Link from 'next/link';
 
 export const CartDrawer: React.FC = () => {
     const { items, isDrawerOpen, closeDrawer, removeItem } = useCart();
 
-    const total = items.reduce((acc: number, item: any) => {
-        const price = parseFloat(item.price.replace(/[^0-9.-]+/g, ""));
-        return acc + (price * item.quantity);
+    const total = items.reduce((acc: number, item: CartItem) => {
+        return acc + (item.price * item.quantity);
     }, 0);
 
     if (!isDrawerOpen) return null;
@@ -62,7 +60,7 @@ export const CartDrawer: React.FC = () => {
                                         </div>
                                         <div className="flex justify-between items-center">
                                             <span className="text-sm text-foreground/30 font-bold">Qty {item.quantity}</span>
-                                            <span className="text-lekki-lime font-black">{item.price}</span>
+                                                <span className="text-lekki-lime font-black">₦{item.price.toLocaleString()}</span>
                                         </div>
                                     </div>
                                 </div>

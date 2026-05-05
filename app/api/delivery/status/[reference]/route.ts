@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 
-const MERCHANT_REF = process.env.CHOWDECK_MERCHANT_REFERENCE || '133994';
 const API_BASE = process.env.CHOWDECK_API_URL || 'https://api.chowdeck.com';
 const API_TOKEN = process.env.CHOWDECK_API_TOKEN || '';
 

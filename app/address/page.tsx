@@ -38,8 +38,7 @@ export default function AddressPage() {
     };
 
     const totalOrderAmount = items.reduce((acc, item) => {
-        const price = parseFloat(item.price.replace(/[₦,]/g, ''));
-        return acc + (isNaN(price) ? 0 : price * item.quantity);
+        return acc + (item.price * item.quantity);
     }, 0);
 
     const handleProceed = async (e: React.FormEvent) => {

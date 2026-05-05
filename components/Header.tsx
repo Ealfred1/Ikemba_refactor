@@ -8,16 +8,13 @@ import Image from 'next/image';
 import { useTheme } from 'next-themes';
 import { Sun, Moon } from 'lucide-react';
 
+const isClient = typeof window !== 'undefined';
+
 export const Header: React.FC = () => {
     const { theme, setTheme } = useTheme();
-    const [mounted, setMounted] = useState(false);
     const { openDrawer, items } = useCart();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const itemCount = items.reduce((acc, item) => acc + item.quantity, 0);
-
-    useEffect(() => {
-        setMounted(true);
-    }, []);
 
     // Lock body scroll when mobile menu is open
     useEffect(() => {
@@ -50,7 +47,7 @@ export const Header: React.FC = () => {
 
                 {/* Desktop Nav */}
                 <nav className="hidden md:flex gap-6 items-center">
-                    {mounted && (
+                    {isClient && (
                         <button
                             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
                             className="p-2 rounded-full border border-border hover:bg-surface transition-all text-foreground/60 hover:text-lekki-lime"
@@ -124,7 +121,7 @@ export const Header: React.FC = () => {
                             </span>
                         </button>
 
-                        {mounted && (
+                        {isClient && (
                             <button
                                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
                                 className="p-3 rounded-full border border-border bg-surface text-foreground"

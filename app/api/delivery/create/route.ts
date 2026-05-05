@@ -17,7 +17,7 @@ export async function POST(request: Request) {
         const body = await request.json();
         const data = await createChowdeckDelivery(body);
         return NextResponse.json(data);
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('[/api/delivery/create] Failed:', error);
         return NextResponse.json(
             { error: error.message || 'Internal server error' },
